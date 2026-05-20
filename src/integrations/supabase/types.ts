@@ -586,6 +586,16 @@ export type Database = {
           landlord_id: string
         }[]
       }
+      create_notification: {
+        Args: {
+          _body: string
+          _link: string
+          _title: string
+          _type: string
+          _user_id: string
+        }
+        Returns: undefined
+      }
       expire_old_invitations: { Args: never; Returns: undefined }
       get_user_roles: {
         Args: { _user_id: string }
