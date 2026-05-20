@@ -7,7 +7,6 @@ import {
   Megaphone,
   Settings,
   LogOut,
-  Home,
   Search,
 } from "lucide-react";
 import {
