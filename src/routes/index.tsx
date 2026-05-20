@@ -10,9 +10,22 @@ import {
   ShieldCheck,
   ArrowRight,
   CheckCircle2,
+  UserPlus,
+  KeyRound,
+  TrendingUp,
+  Sparkles,
 } from "lucide-react";
-import { motion, useMotionValue, useSpring, useTransform, useScroll } from "framer-motion";
-import { useEffect, useRef } from "react";
+import {
+  motion,
+  useMotionValue,
+  useSpring,
+  useTransform,
+  useScroll,
+  useInView,
+  animate,
+  type MotionValue,
+} from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 
 export const Route = createFileRoute("/")({
   component: Landing,
