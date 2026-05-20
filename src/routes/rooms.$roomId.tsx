@@ -72,7 +72,10 @@ function RoomDetailPage() {
     },
   });
 
-  const { data: existing } = useQuery({
+  const {
+    data: existing,
+    isLoading: isLoadingExisting,
+  } = useQuery({
     queryKey: ["my-booking", roomId, user?.id],
     enabled: !!user && !!room,
     queryFn: async () => {
@@ -92,6 +95,9 @@ function RoomDetailPage() {
     mutationFn: async () => {
       if (!user || !room?.properties)
         throw new Error("Sign in as a tenant to request");
+      if (!moveIn) throw new Error("Pick a move-in date");
+      const today = new Date().toISOString().slice(0, 10);
+      if (moveIn < today) throw new Error("Move-in date can't be in the past");
       const { error } = await supabase.from("booking_requests").insert({
         tenant_id: user.id,
         landlord_id: room.properties.landlord_id,
@@ -105,7 +111,8 @@ function RoomDetailPage() {
       toast.success("Request sent — the landlord will review it shortly");
       setMessage("");
     },
-    onError: (e: Error) => toast.error(e.message),
+    onError: (e: Error) =>
+      toast.error("Couldn't send request", { description: e.message }),
   });
 
   if (isLoading) {
@@ -138,12 +145,12 @@ function RoomDetailPage() {
   }
 
   const isLandlord = roles.includes("landlord");
-  const canRequest =
-    !isLandlord &&
-    !!user &&
-    !existing &&
-    room.status === "vacant" &&
-    room.is_listed;
+  const isAvailable = room.status === "vacant" && room.is_listed;
+  const canRequest = !isLandlord && !!user && !existing && isAvailable;
+  const leaseMonths = room.lease_duration_months ?? 12;
+  const firstPayment = Number(room.first_payment) || 0;
+  const deposit = Number(room.deposit) || 0;
+  const moveInInPast = !!moveIn && moveIn < new Date().toISOString().slice(0, 10);
 
   return (
     <>
