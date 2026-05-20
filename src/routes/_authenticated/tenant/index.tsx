@@ -50,7 +50,7 @@ function TenantDashboard() {
               <div className="mt-5 grid grid-cols-2 gap-4 text-sm sm:grid-cols-4">
                 <div>
                   <div className="text-muted-foreground">Rent</div>
-                  <div className="mt-1 font-display text-lg">${Number(lease.rent_amount).toLocaleString()}</div>
+                  <div className="mt-1 font-display text-lg">₦{Number(lease.rent_amount).toLocaleString()}</div>
                 </div>
                 <div>
                   <div className="text-muted-foreground">Cycle</div>

@@ -207,13 +207,13 @@ function LeasesPage() {
                     <div>
                       <span className="text-xs text-muted-foreground">Rent</span>
                       <div className="font-semibold">
-                        ${Number(l.rent_amount).toFixed(0)}
+                        ₦{Number(l.rent_amount).toFixed(0)}
                       </div>
                     </div>
                     <div>
                       <span className="text-xs text-muted-foreground">Deposit</span>
                       <div className="font-semibold">
-                        ${Number(l.deposit_amount).toFixed(0)}
+                        ₦{Number(l.deposit_amount).toFixed(0)}
                       </div>
                     </div>
                     <AlertDialog>
@@ -350,7 +350,7 @@ function LeaseDialog({
               ) : null}
               {rooms.map((r) => (
                 <SelectItem key={r.id} value={r.id}>
-                  {r.properties?.name} · {r.name} (${Number(r.price).toFixed(0)})
+                  {r.properties?.name} · {r.name} (₦{Number(r.price).toFixed(0)})
                 </SelectItem>
               ))}
             </SelectContent>
