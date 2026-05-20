@@ -368,74 +368,9 @@ function Landing() {
       <StatsScene />
 
 
-      {/* FEATURES */}
-      <section id="features" className="relative container mx-auto px-4 py-24">
-        <FeaturesBackdrop />
-        <motion.div
-          className="relative mx-auto max-w-2xl text-center"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.6 }}
-        >
-          <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-medium text-primary-deep">
-            <Sparkles className="h-3 w-3" /> Features
-          </span>
-          <h2 className="mt-4 font-display text-4xl font-semibold tracking-tight md:text-5xl">
-            Everything a landlord{" "}
-            <span className="relative inline-block">
-              actually
-              <motion.span
-                aria-hidden
-                className="absolute inset-x-0 bottom-1 -z-10 h-2 rounded-full bg-gold/50"
-                initial={{ scaleX: 0, originX: 0 }}
-                whileInView={{ scaleX: 1 }}
-                viewport={{ once: true, margin: "-80px" }}
-                transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
-              />
-            </span>{" "}
-            needs
-          </h2>
-          <p className="mt-3 text-muted-foreground">
-            Not a generic CRM. Purpose-built for residential property operations.
-          </p>
-        </motion.div>
-        <div className="relative mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {features.map((f, i) => (
-            <motion.div
-              key={f.title}
-              className="group relative overflow-hidden rounded-2xl border bg-card p-6"
-              initial={{ opacity: 0, y: 30, rotateX: -8 }}
-              whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.55, delay: i * 0.08, ease: "easeOut" }}
-              whileHover={{ y: -6 }}
-              style={{ transformPerspective: 800 }}
-            >
-              <div
-                aria-hidden
-                className="absolute inset-0 -z-10 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-                style={{
-                  background:
-                    "radial-gradient(60% 60% at 30% 0%, color-mix(in oklab, var(--primary) 12%, transparent), transparent 70%)",
-                }}
-              />
-              <motion.span
-                className="grid h-12 w-12 place-items-center rounded-xl bg-primary/10 text-primary"
-                whileHover={{ scale: 1.15, rotate: 6 }}
-                transition={{ type: "spring", stiffness: 280, damping: 14 }}
-              >
-                <f.icon className="h-5 w-5" />
-              </motion.span>
-              <h3 className="mt-5 font-display text-xl font-semibold">{f.title}</h3>
-              <p className="mt-1 text-sm text-muted-foreground">{f.desc}</p>
-              <div className="mt-4 flex items-center gap-1 text-xs font-medium text-primary opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                Learn more <ArrowRight className="h-3 w-3" />
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </section>
+      {/* FEATURES — scroll-driven reveal */}
+      <FeaturesScene />
+
 
       {/* HOW IT WORKS — scroll-driven timeline */}
       <HowItWorks />
