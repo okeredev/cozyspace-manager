@@ -39,6 +39,7 @@ import { Route as AuthenticatedLandlordLeasesRouteImport } from './routes/_authe
 import { Route as AuthenticatedLandlordLabelsRouteImport } from './routes/_authenticated/landlord/labels'
 import { Route as AuthenticatedLandlordAnnouncementsRouteImport } from './routes/_authenticated/landlord/announcements'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin/users'
+import { Route as AuthenticatedAdminPropertiesRouteImport } from './routes/_authenticated/admin/properties'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -206,6 +207,12 @@ const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
   path: '/users',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedAdminPropertiesRoute =
+  AuthenticatedAdminPropertiesRouteImport.update({
+    id: '/properties',
+    path: '/properties',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -218,6 +225,7 @@ export interface FileRoutesByFullPath {
   '/tenant': typeof AuthenticatedTenantRouteWithChildren
   '/invite/$token': typeof InviteTokenRoute
   '/rooms/$roomId': typeof RoomsRoomIdRoute
+  '/admin/properties': typeof AuthenticatedAdminPropertiesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/landlord/announcements': typeof AuthenticatedLandlordAnnouncementsRoute
   '/landlord/labels': typeof AuthenticatedLandlordLabelsRoute
@@ -246,6 +254,7 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/invite/$token': typeof InviteTokenRoute
   '/rooms/$roomId': typeof RoomsRoomIdRoute
+  '/admin/properties': typeof AuthenticatedAdminPropertiesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/landlord/announcements': typeof AuthenticatedLandlordAnnouncementsRoute
   '/landlord/labels': typeof AuthenticatedLandlordLabelsRoute
@@ -279,6 +288,7 @@ export interface FileRoutesById {
   '/_authenticated/tenant': typeof AuthenticatedTenantRouteWithChildren
   '/invite/$token': typeof InviteTokenRoute
   '/rooms/$roomId': typeof RoomsRoomIdRoute
+  '/_authenticated/admin/properties': typeof AuthenticatedAdminPropertiesRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/landlord/announcements': typeof AuthenticatedLandlordAnnouncementsRoute
   '/_authenticated/landlord/labels': typeof AuthenticatedLandlordLabelsRoute
@@ -312,6 +322,7 @@ export interface FileRouteTypes {
     | '/tenant'
     | '/invite/$token'
     | '/rooms/$roomId'
+    | '/admin/properties'
     | '/admin/users'
     | '/landlord/announcements'
     | '/landlord/labels'
@@ -340,6 +351,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/invite/$token'
     | '/rooms/$roomId'
+    | '/admin/properties'
     | '/admin/users'
     | '/landlord/announcements'
     | '/landlord/labels'
@@ -372,6 +384,7 @@ export interface FileRouteTypes {
     | '/_authenticated/tenant'
     | '/invite/$token'
     | '/rooms/$roomId'
+    | '/_authenticated/admin/properties'
     | '/_authenticated/admin/users'
     | '/_authenticated/landlord/announcements'
     | '/_authenticated/landlord/labels'
@@ -616,15 +629,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminUsersRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/properties': {
+      id: '/_authenticated/admin/properties'
+      path: '/properties'
+      fullPath: '/admin/properties'
+      preLoaderRoute: typeof AuthenticatedAdminPropertiesRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
   }
 }
 
 interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminPropertiesRoute: typeof AuthenticatedAdminPropertiesRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminPropertiesRoute: AuthenticatedAdminPropertiesRoute,
   AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
