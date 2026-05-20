@@ -91,7 +91,13 @@ function TicketsPage() {
   );
 
   const update = useMutation({
-    mutationFn: async ({ id, patch }: { id: string; patch: Partial<Ticket> }) => {
+    mutationFn: async ({
+      id,
+      patch,
+    }: {
+      id: string;
+      patch: { status?: Ticket["status"]; priority?: Ticket["priority"] };
+    }) => {
       const { error } = await supabase
         .from("maintenance_tickets")
         .update(patch)

@@ -281,7 +281,7 @@ function PaymentDialog({
   const [method, setMethod] = useState("cash");
   const [reference, setReference] = useState("");
   const [notes, setNotes] = useState("");
-  const [status, setStatus] = useState<"paid" | "pending" | "overdue">("paid");
+  const [status, setStatus] = useState<"paid" | "pending" | "failed" | "refunded">("paid");
 
   function onLeaseChange(id: string) {
     setLeaseId(id);
@@ -371,7 +371,8 @@ function PaymentDialog({
               <SelectContent>
                 <SelectItem value="paid">Paid</SelectItem>
                 <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="overdue">Overdue</SelectItem>
+                <SelectItem value="failed">Failed</SelectItem>
+                <SelectItem value="refunded">Refunded</SelectItem>
               </SelectContent>
             </Select>
           </div>
