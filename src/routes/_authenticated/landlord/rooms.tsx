@@ -345,6 +345,12 @@ function RoomDialog({
   const [description, setDescription] = useState(existing?.description ?? "");
   const [price, setPrice] = useState(existing?.price?.toString() ?? "0");
   const [deposit, setDeposit] = useState(existing?.deposit?.toString() ?? "0");
+  const [firstPayment, setFirstPayment] = useState(
+    existing?.first_payment?.toString() ?? "0",
+  );
+  const [leaseMonths, setLeaseMonths] = useState(
+    existing?.lease_duration_months?.toString() ?? "12",
+  );
   const [capacity, setCapacity] = useState(existing?.capacity?.toString() ?? "1");
   const [status, setStatus] = useState<RoomStatus>(existing?.status ?? "vacant");
   const [labelId, setLabelId] = useState<string>(existing?.label_id ?? "none");
