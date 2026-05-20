@@ -373,13 +373,16 @@ function Landing() {
 
 
       {/* HOW IT WORKS — scroll-driven timeline */}
-      <HowItWorks />
+      <div id="scene-how"><HowItWorks /></div>
 
       {/* SCENE: Building rises as you scroll */}
-      <BuildingScene />
+      <div id="scene-building"><BuildingScene /></div>
 
       {/* SCENE: Rent flowing in */}
-      <RentFlowScene />
+      <div id="scene-rent"><RentFlowScene /></div>
+
+
+
 
 
 
