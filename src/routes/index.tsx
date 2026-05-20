@@ -885,3 +885,312 @@ function PaymentRow({
 }
 
 
+
+/* ---------- Right-side chapter rail ---------- */
+function ChapterRail() {
+  const chapters = [
+    { id: "scene-hero", label: "Intro" },
+    { id: "scene-stats", label: "Numbers" },
+    { id: "scene-features", label: "Features" },
+    { id: "scene-how", label: "How it works" },
+    { id: "scene-building", label: "Portfolio" },
+    { id: "scene-rent", label: "Rent rolls in" },
+    { id: "scene-pricing", label: "Get started" },
+  ];
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    const els = chapters
+      .map((c) => document.getElementById(c.id))
+      .filter((el): el is HTMLElement => !!el);
+    if (els.length === 0) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        // Pick the entry closest to the viewport center
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+        if (visible[0]) {
+          const idx = chapters.findIndex((c) => c.id === visible[0].target.id);
+          if (idx >= 0) setActive(idx);
+        }
+      },
+      { rootMargin: "-40% 0px -40% 0px", threshold: [0, 0.25, 0.5, 0.75, 1] },
+    );
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, []);
+
+  return (
+    <nav
+      aria-label="Page chapters"
+      className="pointer-events-none fixed right-4 top-1/2 z-40 hidden -translate-y-1/2 lg:block"
+    >
+      <ul className="pointer-events-auto flex flex-col gap-3 rounded-full border bg-background/70 px-2 py-3 shadow-lg backdrop-blur">
+        {chapters.map((c, i) => {
+          const isActive = i === active;
+          return (
+            <li key={c.id} className="group relative flex items-center justify-end">
+              <span
+                className={`pointer-events-none absolute right-7 whitespace-nowrap rounded-md bg-foreground px-2 py-0.5 text-xs font-medium text-background opacity-0 transition-opacity duration-200 group-hover:opacity-100 ${isActive ? "opacity-100" : ""}`}
+              >
+                {c.label}
+              </span>
+              <a
+                href={`#${c.id}`}
+                aria-label={c.label}
+                aria-current={isActive ? "true" : undefined}
+                className="block"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById(c.id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+                }}
+              >
+                <motion.span
+                  className={`block rounded-full transition-colors ${isActive ? "bg-primary" : "bg-muted-foreground/40 hover:bg-muted-foreground/70"}`}
+                  animate={{ width: isActive ? 18 : 8, height: 8 }}
+                  transition={{ type: "spring", stiffness: 320, damping: 24 }}
+                />
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+  );
+}
+
+/* ---------- STATS scene: counters scrub with section progress ---------- */
+function StatsScene() {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 90%", "end 40%"] });
+  const sp = useSpring(scrollYProgress, { stiffness: 80, damping: 22 });
+  const sweep = useTransform(sp, [0, 1], ["-30%", "130%"]);
+
+  const stats = [
+    { label: "Properties managed", value: 1240, suffix: "+", prefix: "" },
+    { label: "Rent collected", value: 4.8, suffix: "M", prefix: "₦", decimals: 1 },
+    { label: "Tickets resolved", value: 9620, suffix: "", prefix: "" },
+    { label: "Avg. response", value: 12, suffix: "m", prefix: "" },
+  ];
+
+  return (
+    <section id="scene-stats" ref={ref} className="relative overflow-hidden border-y bg-muted/30">
+      {/* sweeping highlight tied to scroll */}
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-primary/10 to-transparent"
+        style={{ left: sweep }}
+      />
+      <div className="container relative mx-auto grid grid-cols-2 gap-8 px-4 py-12 md:grid-cols-4">
+        {stats.map((s, i) => {
+          const start = i * 0.18;
+          const end = start + 0.5;
+          return (
+            <div key={s.label} className="text-center">
+              <div className="font-display text-4xl font-semibold tracking-tight text-primary-deep md:text-5xl">
+                {s.prefix}
+                <ScrubCounter to={s.value} decimals={s.decimals ?? 0} progress={sp} start={start} end={end} />
+                {s.suffix}
+              </div>
+              <div className="mt-1 text-xs uppercase tracking-wider text-muted-foreground">{s.label}</div>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+function ScrubCounter({
+  to,
+  decimals,
+  progress,
+  start,
+  end,
+}: {
+  to: number;
+  decimals: number;
+  progress: MotionValue<number>;
+  start: number;
+  end: number;
+}) {
+  const v = useTransform(progress, [start, end], [0, to], { clamp: true });
+  const [val, setVal] = useState(0);
+  useEffect(() => v.on("change", setVal), [v]);
+  return <span>{val.toFixed(decimals)}</span>;
+}
+
+/* ---------- FEATURES scene: scroll-driven sequential reveal ---------- */
+function FeaturesScene() {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 80%", "end 30%"] });
+  const sp = useSpring(scrollYProgress, { stiffness: 70, damping: 22 });
+  const headerO = useTransform(sp, [0, 0.15], [0, 1]);
+  const headerY = useTransform(sp, [0, 0.15], [30, 0]);
+  const underline = useTransform(sp, [0.1, 0.3], [0, 1]);
+  const railH = useTransform(sp, [0, 1], ["0%", "100%"]);
+
+  return (
+    <section id="scene-features" ref={ref} className="relative container mx-auto px-4 py-24">
+      <FeaturesBackdrop />
+      {/* vertical scroll rail showing local progress */}
+      <motion.div
+        aria-hidden
+        className="absolute left-2 top-24 bottom-24 w-px bg-border md:left-6"
+      />
+      <motion.div
+        aria-hidden
+        className="absolute left-2 top-24 w-px bg-gradient-to-b from-primary to-gold md:left-6"
+        style={{ height: railH }}
+      />
+      <motion.div
+        className="relative mx-auto max-w-2xl text-center"
+        style={{ opacity: headerO, y: headerY }}
+      >
+        <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-medium text-primary-deep">
+          <Sparkles className="h-3 w-3" /> Features
+        </span>
+        <h2 className="mt-4 font-display text-4xl font-semibold tracking-tight md:text-5xl">
+          Everything a landlord{" "}
+          <span className="relative inline-block">
+            actually
+            <motion.span
+              aria-hidden
+              className="absolute inset-x-0 bottom-1 -z-10 h-2 rounded-full bg-gold/50"
+              style={{ scaleX: underline, originX: 0 }}
+            />
+          </span>{" "}
+          needs
+        </h2>
+        <p className="mt-3 text-muted-foreground">
+          Not a generic CRM. Purpose-built for residential property operations.
+        </p>
+      </motion.div>
+      <div className="relative mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {features.map((f, i) => (
+          <FeatureCard key={f.title} feature={f} index={i} total={features.length} progress={sp} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function FeatureCard({
+  feature,
+  index,
+  total,
+  progress,
+}: {
+  feature: (typeof features)[number];
+  index: number;
+  total: number;
+  progress: MotionValue<number>;
+}) {
+  // Stagger reveals between 0.2 and 0.85 of section progress
+  const span = 0.65 / total;
+  const start = 0.2 + index * span;
+  const end = start + span + 0.05;
+  const opacity = useTransform(progress, [start, end], [0, 1]);
+  const y = useTransform(progress, [start, end], [40, 0]);
+  const rotateX = useTransform(progress, [start, end], [-10, 0]);
+  const Icon = feature.icon;
+
+  return (
+    <motion.div
+      className="group relative overflow-hidden rounded-2xl border bg-card p-6"
+      style={{ opacity, y, rotateX, transformPerspective: 800 }}
+      whileHover={{ y: -6 }}
+    >
+      <div
+        aria-hidden
+        className="absolute inset-0 -z-10 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+        style={{
+          background:
+            "radial-gradient(60% 60% at 30% 0%, color-mix(in oklab, var(--primary) 12%, transparent), transparent 70%)",
+        }}
+      />
+      <motion.span
+        className="grid h-12 w-12 place-items-center rounded-xl bg-primary/10 text-primary"
+        whileHover={{ scale: 1.15, rotate: 6 }}
+        transition={{ type: "spring", stiffness: 280, damping: 14 }}
+      >
+        <Icon className="h-5 w-5" />
+      </motion.span>
+      <h3 className="mt-5 font-display text-xl font-semibold">{feature.title}</h3>
+      <p className="mt-1 text-sm text-muted-foreground">{feature.desc}</p>
+      <div className="mt-4 flex items-center gap-1 text-xs font-medium text-primary opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+        Learn more <ArrowRight className="h-3 w-3" />
+      </div>
+    </motion.div>
+  );
+}
+
+/* ---------- PRICING scene: scroll-driven scale and glow ---------- */
+function PricingScene() {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 90%", "end 60%"] });
+  const sp = useSpring(scrollYProgress, { stiffness: 80, damping: 24 });
+  const scale = useTransform(sp, [0, 0.6], [0.92, 1]);
+  const opacity = useTransform(sp, [0, 0.3], [0, 1]);
+  const glow = useTransform(sp, [0, 1], [0.3, 1]);
+
+  return (
+    <section id="scene-pricing" ref={ref} className="container mx-auto px-4 py-24">
+      <motion.div
+        className="relative overflow-hidden rounded-3xl bg-primary-deep px-8 py-20 text-center text-primary-foreground"
+        style={{ scale, opacity }}
+      >
+        <motion.div
+          aria-hidden
+          className="pointer-events-none absolute -top-32 left-1/4 h-[420px] w-[420px] rounded-full blur-3xl"
+          style={{
+            opacity: glow,
+            background:
+              "radial-gradient(closest-side, color-mix(in oklab, var(--gold) 40%, transparent), transparent 70%)",
+          }}
+          animate={{ x: [0, 60, 0], y: [0, 20, 0], scale: [1, 1.15, 1] }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          aria-hidden
+          className="pointer-events-none absolute -bottom-40 right-1/4 h-[380px] w-[380px] rounded-full blur-3xl"
+          style={{
+            opacity: glow,
+            background:
+              "radial-gradient(closest-side, color-mix(in oklab, var(--primary) 50%, transparent), transparent 70%)",
+          }}
+          animate={{ x: [0, -50, 0], y: [0, -20, 0], scale: [1.1, 1, 1.1] }}
+          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+        />
+        {[...Array(8)].map((_, i) => (
+          <motion.span
+            key={i}
+            aria-hidden
+            className="absolute h-2 w-2 rounded-sm bg-gold/60"
+            style={{ top: `${15 + (i * 9) % 70}%`, left: `${(i * 13 + 5) % 95}%` }}
+            animate={{ y: [0, -16, 0], opacity: [0.3, 1, 0.3], rotate: [0, 90, 0] }}
+            transition={{ duration: 4 + (i % 4), repeat: Infinity, ease: "easeInOut", delay: i * 0.3 }}
+          />
+        ))}
+        <h2 className="relative font-display text-4xl font-semibold md:text-5xl">
+          Free while we're in early access.
+        </h2>
+        <p className="relative mx-auto mt-3 max-w-xl opacity-80">
+          Sign up as a landlord today. Invite tenants and manage your entire portfolio with no usage limits.
+        </p>
+        <motion.div
+          className="relative mt-8 inline-block"
+          whileHover={{ scale: 1.04 }}
+          transition={{ type: "spring", stiffness: 300, damping: 15 }}
+        >
+          <Button asChild size="lg" variant="secondary" className="h-12 px-6 shadow-xl">
+            <Link to="/signup">
+              Create your account <ArrowRight className="ml-1 h-4 w-4" />
+            </Link>
+          </Button>
+        </motion.div>
+      </motion.div>
+    </section>
+  );
+}
