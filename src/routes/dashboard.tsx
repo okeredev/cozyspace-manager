@@ -16,6 +16,7 @@ export const Route = createFileRoute("/dashboard")({
       .eq("user_id", sess.session.user.id);
 
     const roleSet = new Set((roles ?? []).map((r) => r.role));
+    if (roleSet.has("admin")) throw redirect({ to: "/admin" });
     if (roleSet.has("landlord")) throw redirect({ to: "/landlord" });
     if (roleSet.has("tenant")) throw redirect({ to: "/tenant" });
     throw redirect({ to: "/" });

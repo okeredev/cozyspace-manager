@@ -19,8 +19,10 @@ import { Route as RoomsRoomIdRouteImport } from './routes/rooms.$roomId'
 import { Route as InviteTokenRouteImport } from './routes/invite.$token'
 import { Route as AuthenticatedTenantRouteImport } from './routes/_authenticated/tenant'
 import { Route as AuthenticatedLandlordRouteImport } from './routes/_authenticated/landlord'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedTenantIndexRouteImport } from './routes/_authenticated/tenant/index'
 import { Route as AuthenticatedLandlordIndexRouteImport } from './routes/_authenticated/landlord/index'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 import { Route as AuthenticatedTenantTicketsRouteImport } from './routes/_authenticated/tenant/tickets'
 import { Route as AuthenticatedTenantProfileRouteImport } from './routes/_authenticated/tenant/profile'
 import { Route as AuthenticatedTenantPaymentsRouteImport } from './routes/_authenticated/tenant/payments'
@@ -36,6 +38,10 @@ import { Route as AuthenticatedLandlordPaymentsRouteImport } from './routes/_aut
 import { Route as AuthenticatedLandlordLeasesRouteImport } from './routes/_authenticated/landlord/leases'
 import { Route as AuthenticatedLandlordLabelsRouteImport } from './routes/_authenticated/landlord/labels'
 import { Route as AuthenticatedLandlordAnnouncementsRouteImport } from './routes/_authenticated/landlord/announcements'
+import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin/users'
+import { Route as AuthenticatedAdminTicketsRouteImport } from './routes/_authenticated/admin/tickets'
+import { Route as AuthenticatedAdminPropertiesRouteImport } from './routes/_authenticated/admin/properties'
+import { Route as AuthenticatedAdminPaymentsRouteImport } from './routes/_authenticated/admin/payments'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -86,6 +92,11 @@ const AuthenticatedLandlordRoute = AuthenticatedLandlordRouteImport.update({
   path: '/landlord',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedTenantIndexRoute =
   AuthenticatedTenantIndexRouteImport.update({
     id: '/',
@@ -98,6 +109,11 @@ const AuthenticatedLandlordIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedLandlordRoute,
   } as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
 const AuthenticatedTenantTicketsRoute =
   AuthenticatedTenantTicketsRouteImport.update({
     id: '/tickets',
@@ -188,6 +204,29 @@ const AuthenticatedLandlordAnnouncementsRoute =
     path: '/announcements',
     getParentRoute: () => AuthenticatedLandlordRoute,
   } as any)
+const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminTicketsRoute =
+  AuthenticatedAdminTicketsRouteImport.update({
+    id: '/tickets',
+    path: '/tickets',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminPropertiesRoute =
+  AuthenticatedAdminPropertiesRouteImport.update({
+    id: '/properties',
+    path: '/properties',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminPaymentsRoute =
+  AuthenticatedAdminPaymentsRouteImport.update({
+    id: '/payments',
+    path: '/payments',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -195,10 +234,15 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/landlord': typeof AuthenticatedLandlordRouteWithChildren
   '/tenant': typeof AuthenticatedTenantRouteWithChildren
   '/invite/$token': typeof InviteTokenRoute
   '/rooms/$roomId': typeof RoomsRoomIdRoute
+  '/admin/payments': typeof AuthenticatedAdminPaymentsRoute
+  '/admin/properties': typeof AuthenticatedAdminPropertiesRoute
+  '/admin/tickets': typeof AuthenticatedAdminTicketsRoute
+  '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/landlord/announcements': typeof AuthenticatedLandlordAnnouncementsRoute
   '/landlord/labels': typeof AuthenticatedLandlordLabelsRoute
   '/landlord/leases': typeof AuthenticatedLandlordLeasesRoute
@@ -214,6 +258,7 @@ export interface FileRoutesByFullPath {
   '/tenant/payments': typeof AuthenticatedTenantPaymentsRoute
   '/tenant/profile': typeof AuthenticatedTenantProfileRoute
   '/tenant/tickets': typeof AuthenticatedTenantTicketsRoute
+  '/admin/': typeof AuthenticatedAdminIndexRoute
   '/landlord/': typeof AuthenticatedLandlordIndexRoute
   '/tenant/': typeof AuthenticatedTenantIndexRoute
 }
@@ -225,6 +270,10 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/invite/$token': typeof InviteTokenRoute
   '/rooms/$roomId': typeof RoomsRoomIdRoute
+  '/admin/payments': typeof AuthenticatedAdminPaymentsRoute
+  '/admin/properties': typeof AuthenticatedAdminPropertiesRoute
+  '/admin/tickets': typeof AuthenticatedAdminTicketsRoute
+  '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/landlord/announcements': typeof AuthenticatedLandlordAnnouncementsRoute
   '/landlord/labels': typeof AuthenticatedLandlordLabelsRoute
   '/landlord/leases': typeof AuthenticatedLandlordLeasesRoute
@@ -240,6 +289,7 @@ export interface FileRoutesByTo {
   '/tenant/payments': typeof AuthenticatedTenantPaymentsRoute
   '/tenant/profile': typeof AuthenticatedTenantProfileRoute
   '/tenant/tickets': typeof AuthenticatedTenantTicketsRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
   '/landlord': typeof AuthenticatedLandlordIndexRoute
   '/tenant': typeof AuthenticatedTenantIndexRoute
 }
@@ -251,10 +301,15 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/landlord': typeof AuthenticatedLandlordRouteWithChildren
   '/_authenticated/tenant': typeof AuthenticatedTenantRouteWithChildren
   '/invite/$token': typeof InviteTokenRoute
   '/rooms/$roomId': typeof RoomsRoomIdRoute
+  '/_authenticated/admin/payments': typeof AuthenticatedAdminPaymentsRoute
+  '/_authenticated/admin/properties': typeof AuthenticatedAdminPropertiesRoute
+  '/_authenticated/admin/tickets': typeof AuthenticatedAdminTicketsRoute
+  '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/landlord/announcements': typeof AuthenticatedLandlordAnnouncementsRoute
   '/_authenticated/landlord/labels': typeof AuthenticatedLandlordLabelsRoute
   '/_authenticated/landlord/leases': typeof AuthenticatedLandlordLeasesRoute
@@ -270,6 +325,7 @@ export interface FileRoutesById {
   '/_authenticated/tenant/payments': typeof AuthenticatedTenantPaymentsRoute
   '/_authenticated/tenant/profile': typeof AuthenticatedTenantProfileRoute
   '/_authenticated/tenant/tickets': typeof AuthenticatedTenantTicketsRoute
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/landlord/': typeof AuthenticatedLandlordIndexRoute
   '/_authenticated/tenant/': typeof AuthenticatedTenantIndexRoute
 }
@@ -281,10 +337,15 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/signup'
+    | '/admin'
     | '/landlord'
     | '/tenant'
     | '/invite/$token'
     | '/rooms/$roomId'
+    | '/admin/payments'
+    | '/admin/properties'
+    | '/admin/tickets'
+    | '/admin/users'
     | '/landlord/announcements'
     | '/landlord/labels'
     | '/landlord/leases'
@@ -300,6 +361,7 @@ export interface FileRouteTypes {
     | '/tenant/payments'
     | '/tenant/profile'
     | '/tenant/tickets'
+    | '/admin/'
     | '/landlord/'
     | '/tenant/'
   fileRoutesByTo: FileRoutesByTo
@@ -311,6 +373,10 @@ export interface FileRouteTypes {
     | '/signup'
     | '/invite/$token'
     | '/rooms/$roomId'
+    | '/admin/payments'
+    | '/admin/properties'
+    | '/admin/tickets'
+    | '/admin/users'
     | '/landlord/announcements'
     | '/landlord/labels'
     | '/landlord/leases'
@@ -326,6 +392,7 @@ export interface FileRouteTypes {
     | '/tenant/payments'
     | '/tenant/profile'
     | '/tenant/tickets'
+    | '/admin'
     | '/landlord'
     | '/tenant'
   id:
@@ -336,10 +403,15 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/signup'
+    | '/_authenticated/admin'
     | '/_authenticated/landlord'
     | '/_authenticated/tenant'
     | '/invite/$token'
     | '/rooms/$roomId'
+    | '/_authenticated/admin/payments'
+    | '/_authenticated/admin/properties'
+    | '/_authenticated/admin/tickets'
+    | '/_authenticated/admin/users'
     | '/_authenticated/landlord/announcements'
     | '/_authenticated/landlord/labels'
     | '/_authenticated/landlord/leases'
@@ -355,6 +427,7 @@ export interface FileRouteTypes {
     | '/_authenticated/tenant/payments'
     | '/_authenticated/tenant/profile'
     | '/_authenticated/tenant/tickets'
+    | '/_authenticated/admin/'
     | '/_authenticated/landlord/'
     | '/_authenticated/tenant/'
   fileRoutesById: FileRoutesById
@@ -442,6 +515,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedLandlordRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/tenant/': {
       id: '/_authenticated/tenant/'
       path: '/'
@@ -455,6 +535,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/landlord/'
       preLoaderRoute: typeof AuthenticatedLandlordIndexRouteImport
       parentRoute: typeof AuthenticatedLandlordRoute
+    }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/tenant/tickets': {
       id: '/_authenticated/tenant/tickets'
@@ -561,8 +648,55 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedLandlordAnnouncementsRouteImport
       parentRoute: typeof AuthenticatedLandlordRoute
     }
+    '/_authenticated/admin/users': {
+      id: '/_authenticated/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AuthenticatedAdminUsersRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/tickets': {
+      id: '/_authenticated/admin/tickets'
+      path: '/tickets'
+      fullPath: '/admin/tickets'
+      preLoaderRoute: typeof AuthenticatedAdminTicketsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/properties': {
+      id: '/_authenticated/admin/properties'
+      path: '/properties'
+      fullPath: '/admin/properties'
+      preLoaderRoute: typeof AuthenticatedAdminPropertiesRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/payments': {
+      id: '/_authenticated/admin/payments'
+      path: '/payments'
+      fullPath: '/admin/payments'
+      preLoaderRoute: typeof AuthenticatedAdminPaymentsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
   }
 }
+
+interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminPaymentsRoute: typeof AuthenticatedAdminPaymentsRoute
+  AuthenticatedAdminPropertiesRoute: typeof AuthenticatedAdminPropertiesRoute
+  AuthenticatedAdminTicketsRoute: typeof AuthenticatedAdminTicketsRoute
+  AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+}
+
+const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminPaymentsRoute: AuthenticatedAdminPaymentsRoute,
+  AuthenticatedAdminPropertiesRoute: AuthenticatedAdminPropertiesRoute,
+  AuthenticatedAdminTicketsRoute: AuthenticatedAdminTicketsRoute,
+  AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
+  AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+}
+
+const AuthenticatedAdminRouteWithChildren =
+  AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
 
 interface AuthenticatedLandlordRouteChildren {
   AuthenticatedLandlordAnnouncementsRoute: typeof AuthenticatedLandlordAnnouncementsRoute
@@ -620,11 +754,13 @@ const AuthenticatedTenantRouteWithChildren =
   AuthenticatedTenantRoute._addFileChildren(AuthenticatedTenantRouteChildren)
 
 interface AuthenticatedRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
   AuthenticatedLandlordRoute: typeof AuthenticatedLandlordRouteWithChildren
   AuthenticatedTenantRoute: typeof AuthenticatedTenantRouteWithChildren
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
   AuthenticatedLandlordRoute: AuthenticatedLandlordRouteWithChildren,
   AuthenticatedTenantRoute: AuthenticatedTenantRouteWithChildren,
 }
