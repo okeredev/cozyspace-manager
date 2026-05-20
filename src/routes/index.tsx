@@ -414,64 +414,9 @@ function Landing() {
         </div>
       </section>
 
-      {/* PRICING */}
-      <section id="pricing" className="container mx-auto px-4 py-24">
-        <motion.div
-          className="relative overflow-hidden rounded-3xl bg-primary-deep px-8 py-20 text-center text-primary-foreground"
-          initial={{ opacity: 0, scale: 0.96 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.7 }}
-        >
-          <motion.div
-            aria-hidden
-            className="pointer-events-none absolute -top-32 left-1/4 h-[420px] w-[420px] rounded-full blur-3xl"
-            style={{
-              background:
-                "radial-gradient(closest-side, color-mix(in oklab, var(--gold) 40%, transparent), transparent 70%)",
-            }}
-            animate={{ x: [0, 60, 0], y: [0, 20, 0], scale: [1, 1.15, 1] }}
-            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div
-            aria-hidden
-            className="pointer-events-none absolute -bottom-40 right-1/4 h-[380px] w-[380px] rounded-full blur-3xl"
-            style={{
-              background:
-                "radial-gradient(closest-side, color-mix(in oklab, var(--primary) 50%, transparent), transparent 70%)",
-            }}
-            animate={{ x: [0, -50, 0], y: [0, -20, 0], scale: [1.1, 1, 1.1] }}
-            transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-          />
-          {[...Array(8)].map((_, i) => (
-            <motion.span
-              key={i}
-              aria-hidden
-              className="absolute h-2 w-2 rounded-sm bg-gold/60"
-              style={{ top: `${15 + (i * 9) % 70}%`, left: `${(i * 13 + 5) % 95}%` }}
-              animate={{ y: [0, -16, 0], opacity: [0.3, 1, 0.3], rotate: [0, 90, 0] }}
-              transition={{ duration: 4 + (i % 4), repeat: Infinity, ease: "easeInOut", delay: i * 0.3 }}
-            />
-          ))}
-          <h2 className="relative font-display text-4xl font-semibold md:text-5xl">
-            Free while we're in early access.
-          </h2>
-          <p className="relative mx-auto mt-3 max-w-xl opacity-80">
-            Sign up as a landlord today. Invite tenants and manage your entire portfolio with no usage limits.
-          </p>
-          <motion.div
-            className="relative mt-8 inline-block"
-            whileHover={{ scale: 1.04 }}
-            transition={{ type: "spring", stiffness: 300, damping: 15 }}
-          >
-            <Button asChild size="lg" variant="secondary" className="h-12 px-6 shadow-xl">
-              <Link to="/signup">
-                Create your account <ArrowRight className="ml-1 h-4 w-4" />
-              </Link>
-            </Button>
-          </motion.div>
-        </motion.div>
-      </section>
+      {/* PRICING — scroll-driven scale + glow */}
+      <PricingScene />
+
 
       <footer className="border-t">
         <div className="container mx-auto flex flex-col items-center justify-between gap-2 px-4 py-8 text-sm text-muted-foreground md:flex-row">
