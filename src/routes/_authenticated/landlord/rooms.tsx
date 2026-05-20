@@ -366,6 +366,8 @@ function RoomDialog({
         description: description.trim() || null,
         price: Number(price) || 0,
         deposit: Number(deposit) || 0,
+        first_payment: Number(firstPayment) || 0,
+        lease_duration_months: Math.max(1, Number(leaseMonths) || 12),
         capacity: Math.max(1, Number(capacity) || 1),
         status,
         label_id: labelId === "none" ? null : labelId,
