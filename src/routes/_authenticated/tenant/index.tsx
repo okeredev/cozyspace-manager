@@ -98,6 +98,50 @@ function TenantDashboard() {
         </Card>
       )}
 
+      {landlordProperties && landlordProperties.length > 0 && (
+        <section>
+          <div className="mb-3 flex items-center gap-2">
+            <Building2 className="h-5 w-5 text-primary" />
+            <h2 className="font-display text-xl">Your landlord's properties</h2>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2">
+            {landlordProperties.map((p: any) => (
+              <Card key={p.id} className="overflow-hidden">
+                {p.cover_image_url && (
+                  <img src={p.cover_image_url} alt={p.name} className="h-40 w-full object-cover" />
+                )}
+                <CardContent className="space-y-3 p-5">
+                  <div>
+                    <div className="font-display text-lg">{p.name}</div>
+                    <div className="text-sm text-muted-foreground">
+                      {p.address}{p.city ? `, ${p.city}` : ""}
+                    </div>
+                  </div>
+                  {p.rooms?.length ? (
+                    <ul className="space-y-1.5 text-sm">
+                      {p.rooms.map((r: any) => (
+                        <li key={r.id} className="flex items-center justify-between rounded-md border bg-muted/30 px-3 py-2">
+                          <span className="flex items-center gap-2">
+                            <DoorOpen className="h-4 w-4 text-muted-foreground" />
+                            {r.name}
+                            <span className="text-xs capitalize text-muted-foreground">· {r.status}</span>
+                          </span>
+                          <span className="font-display">₦{Number(r.price).toLocaleString()}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">No rooms listed yet.</p>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </section>
+      )}
+
+
+
       <div className="grid gap-4 sm:grid-cols-3">
         {[
           { to: "/tenant/payments", icon: Receipt, label: "Payments", desc: "View receipts & balance" },
