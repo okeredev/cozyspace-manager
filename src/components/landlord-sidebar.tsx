@@ -26,6 +26,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/hooks/use-auth";
+import { BrandLockup } from "@/components/brand-mark";
 
 const main = [
   { title: "Dashboard", url: "/landlord", icon: LayoutDashboard },
@@ -54,14 +55,8 @@ export function LandlordSidebar() {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="border-b border-sidebar-border">
-        <div className="flex items-center gap-2 px-2 py-3">
-          <span className="grid h-8 w-8 place-items-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
-            <Building2 className="h-4 w-4" />
-          </span>
-          <div className="flex flex-col leading-tight">
-            <span className="font-display text-base font-semibold">RentHub</span>
-            <span className="text-[10px] uppercase tracking-wider opacity-70">Landlord</span>
-          </div>
+        <div className="px-2 py-3">
+          <BrandLockup sub="Landlord" />
         </div>
       </SidebarHeader>
 

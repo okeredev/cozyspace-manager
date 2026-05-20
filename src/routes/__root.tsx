@@ -72,23 +72,27 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "RentHub — Property & Tenant Management" },
+      { title: "TenApp — Property & Tenant Management" },
       {
         name: "description",
         content:
-          "Professional property management for landlords and tenants. Manage rooms, leases, payments, and maintenance in one place.",
+          "TenApp is a modern platform for landlords and tenants — manage properties, rooms, leases, payments, and maintenance in one place.",
       },
-      { property: "og:title", content: "RentHub — Property & Tenant Management" },
+      { property: "og:title", content: "TenApp — Property & Tenant Management" },
       {
         property: "og:description",
         content:
-          "Professional property management for landlords and tenants. Manage rooms, leases, payments, and maintenance in one place.",
+          "TenApp is a modern platform for landlords and tenants — manage properties, rooms, leases, payments, and maintenance in one place.",
       },
+      { property: "og:site_name", content: "TenApp" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "theme-color", content: "#10b981" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
+      { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+      { rel: "apple-touch-icon", href: "/favicon.svg" },
       {
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap",
