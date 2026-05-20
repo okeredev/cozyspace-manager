@@ -151,7 +151,7 @@ function RoomDetailPage() {
   const canRequest = !isLandlord && !!user && !existing && isAvailable;
   const leaseMonths = room.lease_duration_months ?? 12;
   const firstPayment = Number(room.first_payment) || 0;
-  const deposit = Number(room.deposit) || 0;
+  const renewalPayment = Number(room.renewal_payment) || 0;
   const moveInInPast = !!moveIn && moveIn < new Date().toISOString().slice(0, 10);
 
   return (
