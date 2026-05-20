@@ -40,6 +40,7 @@ import { Route as AuthenticatedLandlordLabelsRouteImport } from './routes/_authe
 import { Route as AuthenticatedLandlordAnnouncementsRouteImport } from './routes/_authenticated/landlord/announcements'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin/users'
 import { Route as AuthenticatedAdminPropertiesRouteImport } from './routes/_authenticated/admin/properties'
+import { Route as AuthenticatedAdminPaymentsRouteImport } from './routes/_authenticated/admin/payments'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -213,6 +214,12 @@ const AuthenticatedAdminPropertiesRoute =
     path: '/properties',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminPaymentsRoute =
+  AuthenticatedAdminPaymentsRouteImport.update({
+    id: '/payments',
+    path: '/payments',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -225,6 +232,7 @@ export interface FileRoutesByFullPath {
   '/tenant': typeof AuthenticatedTenantRouteWithChildren
   '/invite/$token': typeof InviteTokenRoute
   '/rooms/$roomId': typeof RoomsRoomIdRoute
+  '/admin/payments': typeof AuthenticatedAdminPaymentsRoute
   '/admin/properties': typeof AuthenticatedAdminPropertiesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/landlord/announcements': typeof AuthenticatedLandlordAnnouncementsRoute
@@ -254,6 +262,7 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/invite/$token': typeof InviteTokenRoute
   '/rooms/$roomId': typeof RoomsRoomIdRoute
+  '/admin/payments': typeof AuthenticatedAdminPaymentsRoute
   '/admin/properties': typeof AuthenticatedAdminPropertiesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/landlord/announcements': typeof AuthenticatedLandlordAnnouncementsRoute
@@ -288,6 +297,7 @@ export interface FileRoutesById {
   '/_authenticated/tenant': typeof AuthenticatedTenantRouteWithChildren
   '/invite/$token': typeof InviteTokenRoute
   '/rooms/$roomId': typeof RoomsRoomIdRoute
+  '/_authenticated/admin/payments': typeof AuthenticatedAdminPaymentsRoute
   '/_authenticated/admin/properties': typeof AuthenticatedAdminPropertiesRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/landlord/announcements': typeof AuthenticatedLandlordAnnouncementsRoute
@@ -322,6 +332,7 @@ export interface FileRouteTypes {
     | '/tenant'
     | '/invite/$token'
     | '/rooms/$roomId'
+    | '/admin/payments'
     | '/admin/properties'
     | '/admin/users'
     | '/landlord/announcements'
@@ -351,6 +362,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/invite/$token'
     | '/rooms/$roomId'
+    | '/admin/payments'
     | '/admin/properties'
     | '/admin/users'
     | '/landlord/announcements'
@@ -384,6 +396,7 @@ export interface FileRouteTypes {
     | '/_authenticated/tenant'
     | '/invite/$token'
     | '/rooms/$roomId'
+    | '/_authenticated/admin/payments'
     | '/_authenticated/admin/properties'
     | '/_authenticated/admin/users'
     | '/_authenticated/landlord/announcements'
@@ -636,16 +649,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminPropertiesRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/payments': {
+      id: '/_authenticated/admin/payments'
+      path: '/payments'
+      fullPath: '/admin/payments'
+      preLoaderRoute: typeof AuthenticatedAdminPaymentsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
   }
 }
 
 interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminPaymentsRoute: typeof AuthenticatedAdminPaymentsRoute
   AuthenticatedAdminPropertiesRoute: typeof AuthenticatedAdminPropertiesRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminPaymentsRoute: AuthenticatedAdminPaymentsRoute,
   AuthenticatedAdminPropertiesRoute: AuthenticatedAdminPropertiesRoute,
   AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
