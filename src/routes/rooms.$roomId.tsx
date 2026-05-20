@@ -225,16 +225,17 @@ function RoomDetailPage() {
                 </div>
               </div>
               <div>
-                <div className="text-xs text-muted-foreground">First payment</div>
+                <div className="text-xs text-muted-foreground">First-year payment</div>
                 <div className="mt-1 font-display text-lg">
                   ${firstPayment.toFixed(0)}
                 </div>
               </div>
               <div>
-                <div className="text-xs text-muted-foreground">Refundable deposit</div>
+                <div className="text-xs text-muted-foreground">Renewal (yr 2+)</div>
                 <div className="mt-1 font-display text-lg">
-                  ${deposit.toFixed(0)}
+                  ${renewalPayment.toFixed(0)}
                 </div>
+                <div className="text-[10px] text-muted-foreground">Non-refundable</div>
               </div>
             </div>
 
