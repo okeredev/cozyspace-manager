@@ -102,60 +102,35 @@ function TenantsPage() {
       const { data, error } = await supabase
         .from("leases")
         .select(
-          "tenant_id, rent_amount, end_date, status, rooms(name, properties(name)), profiles!leases_tenant_id_fkey(full_name, phone)",
+          "tenant_id, rent_amount, end_date, status, rooms(name, properties(name))",
         )
         .eq("landlord_id", user!.id)
         .order("end_date");
-      if (error) {
-        // Profile join may fail if FK not declared; fall back without it
-        const { data: d2, error: e2 } = await supabase
-          .from("leases")
-          .select(
-            "tenant_id, rent_amount, end_date, status, rooms(name, properties(name))",
-          )
-          .eq("landlord_id", user!.id)
-          .order("end_date");
-        if (e2) throw e2;
-        return (d2 ?? []).map(
-          (r: {
-            tenant_id: string;
-            rent_amount: number;
-            end_date: string;
-            status: string;
-            rooms: { name: string; properties: { name: string } } | null;
-          }) => ({
-            tenant_id: r.tenant_id,
-            full_name: null,
-            email: null,
-            phone: null,
-            room_name: r.rooms?.name ?? null,
-            property_name: r.rooms?.properties?.name ?? null,
-            rent_amount: r.rent_amount,
-            end_date: r.end_date,
-            status: r.status,
-          }),
-        ) as TenantRow[];
+      if (error) throw error;
+      const tenantIds = Array.from(
+        new Set((data ?? []).map((r) => r.tenant_id)),
+      );
+      let profileMap: Record<string, { full_name: string | null; phone: string | null }> = {};
+      if (tenantIds.length > 0) {
+        const { data: profs } = await supabase
+          .from("profiles")
+          .select("id, full_name, phone")
+          .in("id", tenantIds);
+        for (const p of profs ?? []) {
+          profileMap[p.id] = { full_name: p.full_name, phone: p.phone };
+        }
       }
-      return (data ?? []).map(
-        (r: {
-          tenant_id: string;
-          rent_amount: number;
-          end_date: string;
-          status: string;
-          rooms: { name: string; properties: { name: string } } | null;
-          profiles: { full_name: string | null; phone: string | null } | null;
-        }) => ({
-          tenant_id: r.tenant_id,
-          full_name: r.profiles?.full_name ?? null,
-          email: null,
-          phone: r.profiles?.phone ?? null,
-          room_name: r.rooms?.name ?? null,
-          property_name: r.rooms?.properties?.name ?? null,
-          rent_amount: r.rent_amount,
-          end_date: r.end_date,
-          status: r.status,
-        }),
-      ) as TenantRow[];
+      return (data ?? []).map((r) => ({
+        tenant_id: r.tenant_id,
+        full_name: profileMap[r.tenant_id]?.full_name ?? null,
+        email: null,
+        phone: profileMap[r.tenant_id]?.phone ?? null,
+        room_name: r.rooms?.name ?? null,
+        property_name: r.rooms?.properties?.name ?? null,
+        rent_amount: r.rent_amount,
+        end_date: r.end_date,
+        status: r.status,
+      })) as TenantRow[];
     },
   });
 
