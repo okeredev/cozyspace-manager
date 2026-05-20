@@ -263,12 +263,11 @@ function RoomsPage() {
                       </div>
                     </div>
                   </div>
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <span className="flex items-center gap-1">
                       <Users className="h-3 w-3" /> capacity {r.capacity}
-                    </div>
-                    <div className="text-right text-xs text-muted-foreground">
-                      {r.is_listed ? "Listed publicly" : "Not listed"}
-                    </div>
+                    </span>
+                    <span>{r.is_listed ? "Listed publicly" : "Not listed"}</span>
                   </div>
 
                   {lbl ? (
