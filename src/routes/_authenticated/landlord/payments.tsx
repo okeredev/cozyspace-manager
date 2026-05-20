@@ -209,7 +209,7 @@ function PaymentsPage() {
                         {p.status}
                       </Badge>
                       <div className="text-right font-semibold">
-                        ${Number(p.amount).toFixed(0)}
+                        ₦{Number(p.amount).toFixed(0)}
                       </div>
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
@@ -332,7 +332,7 @@ function PaymentDialog({
             <SelectContent>
               {leases.map((l) => (
                 <SelectItem key={l.id} value={l.id}>
-                  {l.rooms?.properties?.name} · {l.rooms?.name} (${Number(l.rent_amount).toFixed(0)})
+                  {l.rooms?.properties?.name} · {l.rooms?.name} (₦{Number(l.rent_amount).toFixed(0)})
                 </SelectItem>
               ))}
             </SelectContent>

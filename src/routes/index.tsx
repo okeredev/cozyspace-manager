@@ -367,7 +367,7 @@ function Landing() {
         <div className="container mx-auto grid grid-cols-2 gap-8 px-4 py-12 md:grid-cols-4">
           {[
             { label: "Properties managed", value: 1240, suffix: "+" },
-            { label: "Rent collected", value: 4.8, suffix: "M", prefix: "$", decimals: 1 },
+            { label: "Rent collected", value: 4.8, suffix: "M", prefix: "₦", decimals: 1 },
             { label: "Tickets resolved", value: 9620, suffix: "" },
             { label: "Avg. response", value: 12, suffix: "m" },
           ].map((s, i) => (
@@ -944,7 +944,7 @@ function RentFlowScene() {
                   Rent ledger · This month
                 </div>
                 <div className="mt-1 font-display text-3xl font-semibold text-primary-deep">
-                  ${displayTotal.toLocaleString()}
+                  ₦{displayTotal.toLocaleString()}
                 </div>
               </div>
               <motion.div
@@ -1018,7 +1018,7 @@ function PaymentRow({
           <span className="font-medium">{payment.name}</span>
         </div>
         <span className="font-display text-base font-semibold text-primary-deep">
-          +${payment.amount.toLocaleString()}
+          +₦{payment.amount.toLocaleString()}
         </span>
       </div>
     </motion.li>

@@ -208,7 +208,7 @@ function TenantsPage() {
                     <div className="flex items-center justify-between border-t pt-2 text-xs text-muted-foreground">
                       <span>Lease ends {t.end_date}</span>
                       <span className="font-medium text-foreground">
-                        ${Number(t.rent_amount).toFixed(0)}/mo
+                        ₦{Number(t.rent_amount).toFixed(0)}/mo
                       </span>
                     </div>
                   </CardContent>

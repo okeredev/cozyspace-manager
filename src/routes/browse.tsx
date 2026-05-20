@@ -83,7 +83,7 @@ function BrowsePage() {
                             </p>
                           </div>
                           <div className="text-right">
-                            <div className="font-display text-xl">${Number(r.price).toLocaleString()}</div>
+                            <div className="font-display text-xl">₦{Number(r.price).toLocaleString()}</div>
                             <div className="text-[10px] uppercase tracking-wider text-muted-foreground">/ month</div>
                           </div>
                         </div>

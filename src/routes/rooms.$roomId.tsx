@@ -227,13 +227,13 @@ function RoomDetailPage() {
               <div>
                 <div className="text-xs text-muted-foreground">First-year payment</div>
                 <div className="mt-1 font-display text-lg">
-                  ${firstPayment.toFixed(0)}
+                  ₦{firstPayment.toFixed(0)}
                 </div>
               </div>
               <div>
                 <div className="text-xs text-muted-foreground">Renewal (yr 2+)</div>
                 <div className="mt-1 font-display text-lg">
-                  ${renewalPayment.toFixed(0)}
+                  ₦{renewalPayment.toFixed(0)}
                 </div>
                 <div className="text-[10px] text-muted-foreground">Non-refundable</div>
               </div>
@@ -277,15 +277,15 @@ function RoomDetailPage() {
               <CardContent className="space-y-4 p-6">
                 <div>
                   <div className="font-display text-3xl">
-                    ${Number(room.price).toFixed(0)}
+                    ₦{Number(room.price).toFixed(0)}
                     <span className="text-sm font-normal text-muted-foreground">
                       {" "}
                       / month
                     </span>
                   </div>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    {leaseMonths}-month lease · ${firstPayment.toFixed(0)} for year
-                    1 · ${renewalPayment.toFixed(0)} per renewal year
+                    {leaseMonths}-month lease · ₦{firstPayment.toFixed(0)} for year
+                    1 · ₦{renewalPayment.toFixed(0)} per renewal year
                   </p>
                 </div>
 

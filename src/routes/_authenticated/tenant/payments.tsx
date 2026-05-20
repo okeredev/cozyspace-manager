@@ -89,7 +89,7 @@ function TenantPaymentsPage() {
               <span>Total paid</span>
               <DollarSign className="h-4 w-4" />
             </div>
-            <div className="mt-1 font-display text-2xl">${totalPaid.toFixed(0)}</div>
+            <div className="mt-1 font-display text-2xl">₦{totalPaid.toFixed(0)}</div>
           </CardContent>
         </Card>
         <Card>
@@ -98,7 +98,7 @@ function TenantPaymentsPage() {
               <span>Outstanding</span>
               <Clock className="h-4 w-4" />
             </div>
-            <div className="mt-1 font-display text-2xl">${outstanding.toFixed(0)}</div>
+            <div className="mt-1 font-display text-2xl">₦{outstanding.toFixed(0)}</div>
           </CardContent>
         </Card>
       </div>
@@ -143,7 +143,7 @@ function TenantPaymentsPage() {
                     <div className="flex items-center gap-3">
                       <Badge className={color} variant="secondary">{p.status}</Badge>
                       <div className="text-right font-semibold">
-                        ${Number(p.amount).toFixed(0)}
+                        ₦{Number(p.amount).toFixed(0)}
                       </div>
                     </div>
                   </div>
