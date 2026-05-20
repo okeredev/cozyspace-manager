@@ -16,13 +16,16 @@ export const Route = createFileRoute("/")({
   component: Landing,
   head: () => ({
     meta: [
-      { title: "RentHub — Modern property management for landlords & tenants" },
+      { title: "TenApp — Modern property management for landlords & tenants" },
       {
         name: "description",
         content:
-          "All-in-one platform to manage properties, rooms, tenants, leases, rent, and maintenance. Built for serious landlords.",
+          "TenApp is an all-in-one platform to manage properties, rooms, tenants, leases, rent, and maintenance. Built for serious landlords.",
       },
+      { property: "og:title", content: "TenApp — Property management, refined" },
+      { property: "og:url", content: "/" },
     ],
+    links: [{ rel: "canonical", href: "/" }],
   }),
 });
 
@@ -61,7 +64,7 @@ function Landing() {
               <span className="italic text-primary-deep">refined.</span>
             </h1>
             <p className="mt-5 max-w-lg text-lg text-muted-foreground">
-              RentHub gives landlords full visibility over properties, rooms, leases, rent, and
+              TenApp gives landlords full visibility over properties, rooms, leases, rent, and
               maintenance — and gives tenants a clean home for everything that matters.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
@@ -164,7 +167,7 @@ function Landing() {
 
       <footer className="border-t">
         <div className="container mx-auto flex flex-col items-center justify-between gap-2 px-4 py-8 text-sm text-muted-foreground md:flex-row">
-          <span>© {new Date().getFullYear()} RentHub</span>
+          <span>© {new Date().getFullYear()} TenApp</span>
           <span>Crafted for landlords and the tenants who deserve better.</span>
         </div>
       </footer>
