@@ -217,9 +217,21 @@ function RoomDetailPage() {
                 </div>
               </div>
               <div>
-                <div className="text-xs text-muted-foreground">Deposit</div>
+                <div className="text-xs text-muted-foreground">Lease</div>
                 <div className="mt-1 font-display text-lg">
-                  ${Number(room.deposit).toFixed(0)}
+                  {leaseMonths} {leaseMonths === 1 ? "month" : "months"}
+                </div>
+              </div>
+              <div>
+                <div className="text-xs text-muted-foreground">First payment</div>
+                <div className="mt-1 font-display text-lg">
+                  ${firstPayment.toFixed(0)}
+                </div>
+              </div>
+              <div>
+                <div className="text-xs text-muted-foreground">Refundable deposit</div>
+                <div className="mt-1 font-display text-lg">
+                  ${deposit.toFixed(0)}
                 </div>
               </div>
             </div>
