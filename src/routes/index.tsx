@@ -560,3 +560,183 @@ function Landing() {
     </div>
   );
 }
+
+/* ---------- Animated counter ---------- */
+function Counter({ to, decimals = 0 }: { to: number; decimals?: number }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-40px" });
+  const [val, setVal] = useState(0);
+
+  useEffect(() => {
+    if (!inView) return;
+    const controls = animate(0, to, {
+      duration: 1.6,
+      ease: "easeOut",
+      onUpdate: (v) => setVal(v),
+    });
+    return () => controls.stop();
+  }, [inView, to]);
+
+  return <span ref={ref}>{val.toFixed(decimals)}</span>;
+}
+
+/* ---------- Section backdrop reacting to scroll ---------- */
+function FeaturesBackdrop() {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+  const y1 = useTransform(scrollYProgress, [0, 1], ["-10%", "10%"]);
+  const y2 = useTransform(scrollYProgress, [0, 1], ["15%", "-15%"]);
+  const rot = useTransform(scrollYProgress, [0, 1], [0, 30]);
+
+  return (
+    <div ref={ref} aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+      <motion.div
+        className="absolute left-[-10%] top-[10%] h-[420px] w-[420px] rounded-full blur-3xl"
+        style={{
+          y: y1,
+          background:
+            "radial-gradient(closest-side, color-mix(in oklab, var(--primary) 22%, transparent), transparent 70%)",
+        }}
+      />
+      <motion.div
+        className="absolute right-[-10%] bottom-[10%] h-[460px] w-[460px] rounded-full blur-3xl"
+        style={{
+          y: y2,
+          background:
+            "radial-gradient(closest-side, color-mix(in oklab, var(--gold) 22%, transparent), transparent 70%)",
+        }}
+      />
+      <motion.div
+        className="absolute inset-0 opacity-[0.04]"
+        style={{
+          rotate: rot,
+          backgroundImage:
+            "linear-gradient(var(--foreground) 1px, transparent 1px), linear-gradient(90deg, var(--foreground) 1px, transparent 1px)",
+          backgroundSize: "60px 60px",
+        }}
+      />
+    </div>
+  );
+}
+
+/* ---------- How it works: scroll-driven timeline ---------- */
+function HowItWorks() {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start 70%", "end 40%"],
+  });
+  const lineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+
+  const steps = [
+    {
+      icon: Building2,
+      title: "Add your properties",
+      desc: "Import or create properties, label rooms, set rent and renewal amounts in minutes.",
+    },
+    {
+      icon: UserPlus,
+      title: "Invite your tenants",
+      desc: "Send a single invite link. Tenants onboard themselves with ID, contacts, and lease acceptance.",
+    },
+    {
+      icon: KeyRound,
+      title: "Collect rent & resolve tickets",
+      desc: "Record payments, issue receipts, and handle maintenance tickets — all in one workspace.",
+    },
+    {
+      icon: TrendingUp,
+      title: "Watch your portfolio grow",
+      desc: "Get expiring-lease alerts, occupancy stats, and a clean handover at renewal time.",
+    },
+  ];
+
+  return (
+    <section className="relative container mx-auto px-4 py-24" ref={ref}>
+      <motion.div
+        className="mx-auto max-w-2xl text-center"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-80px" }}
+        transition={{ duration: 0.6 }}
+      >
+        <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-medium text-primary-deep">
+          How it works
+        </span>
+        <h2 className="mt-4 font-display text-4xl font-semibold tracking-tight md:text-5xl">
+          From keys to cash flow,{" "}
+          <span className="bg-gradient-to-r from-primary to-gold bg-clip-text text-transparent">
+            in four steps
+          </span>
+        </h2>
+      </motion.div>
+
+      <div className="relative mx-auto mt-16 max-w-3xl">
+        {/* Background rail */}
+        <div className="absolute left-6 top-2 bottom-2 w-px bg-border md:left-1/2" />
+        {/* Progress rail */}
+        <motion.div
+          className="absolute left-6 top-2 w-px bg-gradient-to-b from-primary via-primary-deep to-gold md:left-1/2"
+          style={{ height: lineHeight }}
+        />
+        <ul className="space-y-14">
+          {steps.map((s, i) => (
+            <TimelineStep key={s.title} step={s} index={i} progress={scrollYProgress} />
+          ))}
+        </ul>
+      </div>
+    </section>
+  );
+}
+
+function TimelineStep({
+  step,
+  index,
+  progress,
+}: {
+  step: { icon: typeof Building2; title: string; desc: string };
+  index: number;
+  progress: MotionValue<number>;
+}) {
+  const threshold = (index + 0.4) / 4;
+  const dotScale = useTransform(progress, [threshold - 0.15, threshold], [0.6, 1.2]);
+  const dotOpacity = useTransform(progress, [threshold - 0.2, threshold], [0.3, 1]);
+  const Icon = step.icon;
+  const isLeft = index % 2 === 0;
+
+  return (
+    <li className="relative grid grid-cols-[3rem_1fr] gap-4 md:grid-cols-2 md:gap-12">
+      {/* Dot on the rail */}
+      <motion.span
+        aria-hidden
+        className="absolute left-6 top-3 h-3.5 w-3.5 -translate-x-1/2 rounded-full bg-primary shadow-lg shadow-primary/40 md:left-1/2"
+        style={{ scale: dotScale, opacity: dotOpacity }}
+      />
+      {/* Content */}
+      <motion.div
+        className={`col-start-2 md:col-start-${isLeft ? 1 : 2} ${isLeft ? "md:text-right md:pr-12" : "md:col-start-2 md:pl-12"}`}
+        initial={{ opacity: 0, x: isLeft ? -30 : 30 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true, margin: "-80px" }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
+        <div className={`inline-flex items-center gap-2 ${isLeft ? "md:flex-row-reverse" : ""}`}>
+          <span className="grid h-9 w-9 place-items-center rounded-lg bg-primary/10 text-primary">
+            <Icon className="h-4 w-4" />
+          </span>
+          <span className="text-xs uppercase tracking-wider text-muted-foreground">
+            Step {index + 1}
+          </span>
+        </div>
+        <h3 className="mt-3 font-display text-xl font-semibold">{step.title}</h3>
+        <p className="mt-1 text-sm text-muted-foreground">{step.desc}</p>
+      </motion.div>
+      {/* Spacer for the empty column on alternating side */}
+      {isLeft ? <span className="hidden md:block" /> : <span className="hidden md:block md:col-start-1" />}
+    </li>
+  );
+}
+
