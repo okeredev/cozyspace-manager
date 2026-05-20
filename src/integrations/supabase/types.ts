@@ -462,9 +462,11 @@ export type Database = {
           created_at: string
           deposit: number
           description: string | null
+          first_payment: number
           id: string
           is_listed: boolean
           label_id: string | null
+          lease_duration_months: number
           name: string
           photos: string[] | null
           price: number
@@ -478,9 +480,11 @@ export type Database = {
           created_at?: string
           deposit?: number
           description?: string | null
+          first_payment?: number
           id?: string
           is_listed?: boolean
           label_id?: string | null
+          lease_duration_months?: number
           name: string
           photos?: string[] | null
           price?: number
@@ -494,9 +498,11 @@ export type Database = {
           created_at?: string
           deposit?: number
           description?: string | null
+          first_payment?: number
           id?: string
           is_listed?: boolean
           label_id?: string | null
+          lease_duration_months?: number
           name?: string
           photos?: string[] | null
           price?: number

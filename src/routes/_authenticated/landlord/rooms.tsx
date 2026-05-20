@@ -57,6 +57,8 @@ type Room = {
   description: string | null;
   price: number;
   deposit: number;
+  first_payment: number;
+  lease_duration_months: number;
   capacity: number;
   status: RoomStatus;
   label_id: string | null;
@@ -343,6 +345,12 @@ function RoomDialog({
   const [description, setDescription] = useState(existing?.description ?? "");
   const [price, setPrice] = useState(existing?.price?.toString() ?? "0");
   const [deposit, setDeposit] = useState(existing?.deposit?.toString() ?? "0");
+  const [firstPayment, setFirstPayment] = useState(
+    existing?.first_payment?.toString() ?? "0",
+  );
+  const [leaseMonths, setLeaseMonths] = useState(
+    existing?.lease_duration_months?.toString() ?? "12",
+  );
   const [capacity, setCapacity] = useState(existing?.capacity?.toString() ?? "1");
   const [status, setStatus] = useState<RoomStatus>(existing?.status ?? "vacant");
   const [labelId, setLabelId] = useState<string>(existing?.label_id ?? "none");
@@ -358,6 +366,8 @@ function RoomDialog({
         description: description.trim() || null,
         price: Number(price) || 0,
         deposit: Number(deposit) || 0,
+        first_payment: Number(firstPayment) || 0,
+        lease_duration_months: Math.max(1, Number(leaseMonths) || 12),
         capacity: Math.max(1, Number(capacity) || 1),
         status,
         label_id: labelId === "none" ? null : labelId,
@@ -420,7 +430,7 @@ function RoomDialog({
 
         <div className="grid grid-cols-3 gap-3">
           <div className="grid gap-2">
-            <Label>Rent</Label>
+            <Label>Monthly rent</Label>
             <Input
               type="number"
               value={price}
@@ -428,11 +438,33 @@ function RoomDialog({
             />
           </div>
           <div className="grid gap-2">
-            <Label>Deposit</Label>
+            <Label>Refundable deposit</Label>
             <Input
               type="number"
               value={deposit}
               onChange={(e) => setDeposit(e.target.value)}
+            />
+            <p className="text-[10px] text-muted-foreground">Returned at lease end.</p>
+          </div>
+          <div className="grid gap-2">
+            <Label>First payment</Label>
+            <Input
+              type="number"
+              value={firstPayment}
+              onChange={(e) => setFirstPayment(e.target.value)}
+            />
+            <p className="text-[10px] text-muted-foreground">Due at move-in.</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <div className="grid gap-2">
+            <Label>Lease duration (months)</Label>
+            <Input
+              type="number"
+              min={1}
+              value={leaseMonths}
+              onChange={(e) => setLeaseMonths(e.target.value)}
             />
           </div>
           <div className="grid gap-2">

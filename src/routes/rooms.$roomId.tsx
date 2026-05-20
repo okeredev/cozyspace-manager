@@ -16,6 +16,7 @@ import {
   Users,
   CheckCircle2,
   Send,
+  Loader2,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -29,6 +30,8 @@ type Room = {
   description: string | null;
   price: number;
   deposit: number;
+  first_payment: number;
+  lease_duration_months: number;
   capacity: number;
   status: "vacant" | "reserved" | "occupied" | "maintenance";
   photos: string[] | null;
@@ -70,7 +73,10 @@ function RoomDetailPage() {
     },
   });
 
-  const { data: existing } = useQuery({
+  const {
+    data: existing,
+    isLoading: isLoadingExisting,
+  } = useQuery({
     queryKey: ["my-booking", roomId, user?.id],
     enabled: !!user && !!room,
     queryFn: async () => {
@@ -90,6 +96,9 @@ function RoomDetailPage() {
     mutationFn: async () => {
       if (!user || !room?.properties)
         throw new Error("Sign in as a tenant to request");
+      if (!moveIn) throw new Error("Pick a move-in date");
+      const today = new Date().toISOString().slice(0, 10);
+      if (moveIn < today) throw new Error("Move-in date can't be in the past");
       const { error } = await supabase.from("booking_requests").insert({
         tenant_id: user.id,
         landlord_id: room.properties.landlord_id,
@@ -103,7 +112,8 @@ function RoomDetailPage() {
       toast.success("Request sent — the landlord will review it shortly");
       setMessage("");
     },
-    onError: (e: Error) => toast.error(e.message),
+    onError: (e: Error) =>
+      toast.error("Couldn't send request", { description: e.message }),
   });
 
   if (isLoading) {
@@ -136,12 +146,12 @@ function RoomDetailPage() {
   }
 
   const isLandlord = roles.includes("landlord");
-  const canRequest =
-    !isLandlord &&
-    !!user &&
-    !existing &&
-    room.status === "vacant" &&
-    room.is_listed;
+  const isAvailable = room.status === "vacant" && room.is_listed;
+  const canRequest = !isLandlord && !!user && !existing && isAvailable;
+  const leaseMonths = room.lease_duration_months ?? 12;
+  const firstPayment = Number(room.first_payment) || 0;
+  const deposit = Number(room.deposit) || 0;
+  const moveInInPast = !!moveIn && moveIn < new Date().toISOString().slice(0, 10);
 
   return (
     <>
@@ -208,9 +218,21 @@ function RoomDetailPage() {
                 </div>
               </div>
               <div>
-                <div className="text-xs text-muted-foreground">Deposit</div>
+                <div className="text-xs text-muted-foreground">Lease</div>
                 <div className="mt-1 font-display text-lg">
-                  ${Number(room.deposit).toFixed(0)}
+                  {leaseMonths} {leaseMonths === 1 ? "month" : "months"}
+                </div>
+              </div>
+              <div>
+                <div className="text-xs text-muted-foreground">First payment</div>
+                <div className="mt-1 font-display text-lg">
+                  ${firstPayment.toFixed(0)}
+                </div>
+              </div>
+              <div>
+                <div className="text-xs text-muted-foreground">Refundable deposit</div>
+                <div className="mt-1 font-display text-lg">
+                  ${deposit.toFixed(0)}
                 </div>
               </div>
             </div>
@@ -259,6 +281,10 @@ function RoomDetailPage() {
                       / month
                     </span>
                   </div>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {leaseMonths}-month lease · ${firstPayment.toFixed(0)} due at
+                    move-in · ${deposit.toFixed(0)} refundable deposit
+                  </p>
                 </div>
 
                 {!user ? (
@@ -271,11 +297,16 @@ function RoomDetailPage() {
                     </Button>
                   </>
                 ) : isLandlord ? (
+                  <p className="rounded-md bg-muted/50 p-3 text-sm text-muted-foreground">
+                    Landlords can't book — switch to a tenant account to request a
+                    room.
+                  </p>
+                ) : isLoadingExisting ? (
                   <p className="text-sm text-muted-foreground">
-                    Landlords can't book — switch to a tenant account.
+                    Checking your request status…
                   </p>
                 ) : existing ? (
-                  <div className="space-y-2">
+                  <div className="space-y-2 rounded-md border bg-muted/30 p-3">
                     <Badge variant="secondary" className="capitalize">
                       Request {existing.status}
                     </Badge>
@@ -283,11 +314,27 @@ function RoomDetailPage() {
                       Sent {new Date(existing.created_at).toLocaleDateString()}.
                       You'll get an update when the landlord responds.
                     </p>
+                    <Button
+                      className="w-full"
+                      variant="outline"
+                      size="sm"
+                      disabled
+                    >
+                      Already requested
+                    </Button>
                   </div>
-                ) : room.status !== "vacant" || !room.is_listed ? (
-                  <p className="text-sm text-muted-foreground">
-                    Not currently accepting requests.
-                  </p>
+                ) : !isAvailable ? (
+                  <div className="space-y-2">
+                    <Badge variant="outline" className="capitalize">
+                      {room.is_listed ? room.status : "Unlisted"}
+                    </Badge>
+                    <p className="text-sm text-muted-foreground">
+                      Not currently accepting requests.
+                    </p>
+                    <Button className="w-full" disabled>
+                      Unavailable
+                    </Button>
+                  </div>
                 ) : (
                   <>
                     <div className="grid gap-2">
@@ -296,8 +343,15 @@ function RoomDetailPage() {
                         id="movein"
                         type="date"
                         value={moveIn}
+                        min={new Date().toISOString().slice(0, 10)}
                         onChange={(e) => setMoveIn(e.target.value)}
+                        disabled={request.isPending}
                       />
+                      {moveInInPast ? (
+                        <p className="text-xs text-destructive">
+                          Pick a date in the future.
+                        </p>
+                      ) : null}
                     </div>
                     <div className="grid gap-2">
                       <Label htmlFor="msg">Message (optional)</Label>
@@ -307,18 +361,34 @@ function RoomDetailPage() {
                         onChange={(e) => setMessage(e.target.value)}
                         rows={3}
                         placeholder="Tell the landlord a bit about yourself"
+                        disabled={request.isPending}
                       />
                     </div>
                     <Button
                       className="w-full"
                       onClick={() => request.mutate()}
-                      disabled={request.isPending && canRequest}
+                      disabled={
+                        !canRequest ||
+                        request.isPending ||
+                        !moveIn ||
+                        moveInInPast
+                      }
                     >
-                      <Send className="mr-1 h-4 w-4" />
-                      {request.isPending ? "Sending…" : "Request to book"}
+                      {request.isPending ? (
+                        <>
+                          <Loader2 className="mr-1 h-4 w-4 animate-spin" />
+                          Sending…
+                        </>
+                      ) : (
+                        <>
+                          <Send className="mr-1 h-4 w-4" />
+                          Request to book
+                        </>
+                      )}
                     </Button>
                     <p className="text-xs text-muted-foreground">
-                      No charge yet — this just notifies the landlord.
+                      No charge yet — this just notifies the landlord. A{" "}
+                      {leaseMonths}-month lease starts once approved.
                     </p>
                   </>
                 )}
