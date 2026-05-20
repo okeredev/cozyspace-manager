@@ -247,15 +247,22 @@ function RoomsPage() {
 
                   <div className="grid grid-cols-2 gap-2 text-sm">
                     <div>
-                      <div className="text-xs text-muted-foreground">Rent</div>
+                      <div className="text-xs text-muted-foreground">Rent / mo</div>
                       <div className="font-semibold">${Number(r.price).toFixed(0)}</div>
                     </div>
                     <div>
-                      <div className="text-xs text-muted-foreground">Deposit</div>
+                      <div className="text-xs text-muted-foreground">First year</div>
                       <div className="font-semibold">
-                        ${Number(r.deposit).toFixed(0)}
+                        ${Number(r.first_payment).toFixed(0)}
                       </div>
                     </div>
+                    <div>
+                      <div className="text-xs text-muted-foreground">Renewal (yr 2+)</div>
+                      <div className="font-semibold">
+                        ${Number(r.renewal_payment).toFixed(0)}
+                      </div>
+                    </div>
+                  </div>
                     <div className="flex items-center gap-1 text-xs text-muted-foreground">
                       <Users className="h-3 w-3" /> capacity {r.capacity}
                     </div>
