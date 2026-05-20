@@ -101,9 +101,19 @@ function Landing() {
   const heroFade = useTransform(scrollY, [0, 400], [1, 0.4]);
   const heroLift = useTransform(scrollY, [0, 400], [0, -40]);
 
+  // Page-wide scroll progress (top bar)
+  const { scrollYProgress } = useScroll();
+  const progressScale = useSpring(scrollYProgress, { stiffness: 120, damping: 25 });
+
   return (
     <div className="min-h-screen bg-background">
+      <motion.div
+        aria-hidden
+        className="fixed left-0 right-0 top-0 z-50 h-0.5 origin-left bg-gradient-to-r from-primary via-primary-deep to-gold"
+        style={{ scaleX: progressScale }}
+      />
       <SiteHeader />
+
 
       {/* HERO */}
       <section ref={heroRef} className="relative overflow-hidden">
