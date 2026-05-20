@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Home, Receipt, Wrench, Megaphone } from "lucide-react";
+import { Home, Receipt, Wrench, Megaphone, Building2, DoorOpen } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/tenant/")({
   component: TenantDashboard,
@@ -26,6 +26,21 @@ function TenantDashboard() {
         .limit(1)
         .maybeSingle();
       return data;
+    },
+  });
+
+  // Properties from landlords who invited this tenant (RLS scopes results)
+  const { data: landlordProperties } = useQuery({
+    queryKey: ["tenant-landlord-properties", user?.id],
+    enabled: !!user,
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("properties")
+        .select(
+          "id, name, address, city, cover_image_url, landlord_id, rooms(id, name, price, status, photos, is_listed)"
+        )
+        .order("created_at", { ascending: false });
+      return data ?? [];
     },
   });
 
