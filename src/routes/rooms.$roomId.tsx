@@ -29,6 +29,8 @@ type Room = {
   description: string | null;
   price: number;
   deposit: number;
+  first_payment: number;
+  lease_duration_months: number;
   capacity: number;
   status: "vacant" | "reserved" | "occupied" | "maintenance";
   photos: string[] | null;
