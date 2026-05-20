@@ -114,9 +114,11 @@ function Landing() {
       />
       <SiteHeader />
 
+      <ChapterRail />
 
       {/* HERO */}
-      <section ref={heroRef} className="relative overflow-hidden">
+      <section id="scene-hero" ref={heroRef} className="relative overflow-hidden">
+
         {/* Animated gradient orbs that react to mouse */}
         <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
           <motion.div
