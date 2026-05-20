@@ -1,5 +1,170 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ComingSoon } from "@/components/coming-soon";
+import { useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/use-auth";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
+
 export const Route = createFileRoute("/_authenticated/tenant/profile")({
-  component: () => <ComingSoon title="Profile" desc="Edit your profile, contacts & documents — Phase 4." />,
+  component: ProfilePage,
 });
+
+type Profile = {
+  id: string;
+  full_name: string | null;
+  phone: string | null;
+  avatar_url: string | null;
+  bio: string | null;
+  emergency_contact_name: string | null;
+  emergency_contact_phone: string | null;
+  id_doc_url: string | null;
+};
+
+function ProfilePage() {
+  const { user } = useAuth();
+  const qc = useQueryClient();
+
+  const { data: profile, isLoading } = useQuery({
+    queryKey: ["my-profile", user?.id],
+    enabled: !!user,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user!.id)
+        .maybeSingle();
+      if (error) throw error;
+      return data as Profile | null;
+    },
+  });
+
+  const [form, setForm] = useState<Profile | null>(null);
+
+  useEffect(() => {
+    if (profile) setForm(profile);
+  }, [profile]);
+
+  const save = useMutation({
+    mutationFn: async () => {
+      if (!user || !form) return;
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          full_name: form.full_name,
+          phone: form.phone,
+          avatar_url: form.avatar_url,
+          bio: form.bio,
+          emergency_contact_name: form.emergency_contact_name,
+          emergency_contact_phone: form.emergency_contact_phone,
+          id_doc_url: form.id_doc_url,
+        })
+        .eq("id", user.id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Profile updated");
+      qc.invalidateQueries({ queryKey: ["my-profile"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  if (isLoading || !form) {
+    return <div className="p-6 text-sm text-muted-foreground">Loading…</div>;
+  }
+
+  const set = <K extends keyof Profile>(k: K, v: Profile[K]) =>
+    setForm({ ...form, [k]: v });
+
+  return (
+    <div className="container mx-auto max-w-2xl space-y-6 p-6">
+      <div>
+        <h1 className="font-display text-3xl">My profile</h1>
+        <p className="text-sm text-muted-foreground">
+          Keep your details up to date so your landlord can reach you.
+        </p>
+      </div>
+
+      <Card>
+        <CardContent className="space-y-4 p-6">
+          <div className="grid gap-2">
+            <Label>Full name</Label>
+            <Input
+              value={form.full_name ?? ""}
+              onChange={(e) => set("full_name", e.target.value)}
+            />
+          </div>
+          <div className="grid gap-2 sm:grid-cols-2">
+            <div className="grid gap-2">
+              <Label>Phone</Label>
+              <Input
+                value={form.phone ?? ""}
+                onChange={(e) => set("phone", e.target.value)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label>Email</Label>
+              <Input value={user?.email ?? ""} disabled />
+            </div>
+          </div>
+          <div className="grid gap-2">
+            <Label>Avatar URL</Label>
+            <Input
+              value={form.avatar_url ?? ""}
+              onChange={(e) => set("avatar_url", e.target.value)}
+              placeholder="https://…"
+            />
+          </div>
+          <div className="grid gap-2">
+            <Label>About</Label>
+            <Textarea
+              value={form.bio ?? ""}
+              onChange={(e) => set("bio", e.target.value)}
+              rows={3}
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardContent className="space-y-4 p-6">
+          <h2 className="font-display text-lg">Emergency contact</h2>
+          <div className="grid gap-2 sm:grid-cols-2">
+            <div className="grid gap-2">
+              <Label>Name</Label>
+              <Input
+                value={form.emergency_contact_name ?? ""}
+                onChange={(e) => set("emergency_contact_name", e.target.value)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label>Phone</Label>
+              <Input
+                value={form.emergency_contact_phone ?? ""}
+                onChange={(e) => set("emergency_contact_phone", e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="grid gap-2">
+            <Label>ID document URL</Label>
+            <Input
+              value={form.id_doc_url ?? ""}
+              onChange={(e) => set("id_doc_url", e.target.value)}
+              placeholder="Link to a copy of your ID"
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      <div className="flex justify-end">
+        <Button onClick={() => save.mutate()} disabled={save.isPending}>
+          {save.isPending ? "Saving…" : "Save changes"}
+        </Button>
+      </div>
+    </div>
+  );
+}
