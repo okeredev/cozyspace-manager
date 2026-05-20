@@ -12,10 +12,14 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as BrowseRouteImport } from './routes/browse'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as RoomsRoomIdRouteImport } from './routes/rooms.$roomId'
 import { Route as AuthenticatedTenantRouteImport } from './routes/_authenticated/tenant'
 import { Route as AuthenticatedLandlordRouteImport } from './routes/_authenticated/landlord'
+import { Route as AuthenticatedTenantIndexRouteImport } from './routes/_authenticated/tenant/index'
+import { Route as AuthenticatedLandlordIndexRouteImport } from './routes/_authenticated/landlord/index'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -32,6 +36,11 @@ const DashboardRoute = DashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BrowseRoute = BrowseRouteImport.update({
+  id: '/browse',
+  path: '/browse',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedRoute = AuthenticatedRouteImport.update({
   id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
@@ -39,6 +48,11 @@ const AuthenticatedRoute = AuthenticatedRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RoomsRoomIdRoute = RoomsRoomIdRouteImport.update({
+  id: '/rooms/$roomId',
+  path: '/rooms/$roomId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedTenantRoute = AuthenticatedTenantRouteImport.update({
@@ -51,55 +65,101 @@ const AuthenticatedLandlordRoute = AuthenticatedLandlordRouteImport.update({
   path: '/landlord',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedTenantIndexRoute =
+  AuthenticatedTenantIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedTenantRoute,
+  } as any)
+const AuthenticatedLandlordIndexRoute =
+  AuthenticatedLandlordIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedLandlordRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/browse': typeof BrowseRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
-  '/landlord': typeof AuthenticatedLandlordRoute
-  '/tenant': typeof AuthenticatedTenantRoute
+  '/landlord': typeof AuthenticatedLandlordRouteWithChildren
+  '/tenant': typeof AuthenticatedTenantRouteWithChildren
+  '/rooms/$roomId': typeof RoomsRoomIdRoute
+  '/landlord/': typeof AuthenticatedLandlordIndexRoute
+  '/tenant/': typeof AuthenticatedTenantIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/browse': typeof BrowseRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
-  '/landlord': typeof AuthenticatedLandlordRoute
-  '/tenant': typeof AuthenticatedTenantRoute
+  '/rooms/$roomId': typeof RoomsRoomIdRoute
+  '/landlord': typeof AuthenticatedLandlordIndexRoute
+  '/tenant': typeof AuthenticatedTenantIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/browse': typeof BrowseRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
-  '/_authenticated/landlord': typeof AuthenticatedLandlordRoute
-  '/_authenticated/tenant': typeof AuthenticatedTenantRoute
+  '/_authenticated/landlord': typeof AuthenticatedLandlordRouteWithChildren
+  '/_authenticated/tenant': typeof AuthenticatedTenantRouteWithChildren
+  '/rooms/$roomId': typeof RoomsRoomIdRoute
+  '/_authenticated/landlord/': typeof AuthenticatedLandlordIndexRoute
+  '/_authenticated/tenant/': typeof AuthenticatedTenantIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/login' | '/signup' | '/landlord' | '/tenant'
+  fullPaths:
+    | '/'
+    | '/browse'
+    | '/dashboard'
+    | '/login'
+    | '/signup'
+    | '/landlord'
+    | '/tenant'
+    | '/rooms/$roomId'
+    | '/landlord/'
+    | '/tenant/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/login' | '/signup' | '/landlord' | '/tenant'
+  to:
+    | '/'
+    | '/browse'
+    | '/dashboard'
+    | '/login'
+    | '/signup'
+    | '/rooms/$roomId'
+    | '/landlord'
+    | '/tenant'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/browse'
     | '/dashboard'
     | '/login'
     | '/signup'
     | '/_authenticated/landlord'
     | '/_authenticated/tenant'
+    | '/rooms/$roomId'
+    | '/_authenticated/landlord/'
+    | '/_authenticated/tenant/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
+  BrowseRoute: typeof BrowseRoute
   DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
+  RoomsRoomIdRoute: typeof RoomsRoomIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -125,6 +185,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/browse': {
+      id: '/browse'
+      path: '/browse'
+      fullPath: '/browse'
+      preLoaderRoute: typeof BrowseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated': {
       id: '/_authenticated'
       path: ''
@@ -137,6 +204,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rooms/$roomId': {
+      id: '/rooms/$roomId'
+      path: '/rooms/$roomId'
+      fullPath: '/rooms/$roomId'
+      preLoaderRoute: typeof RoomsRoomIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/tenant': {
@@ -153,17 +227,55 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedLandlordRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/tenant/': {
+      id: '/_authenticated/tenant/'
+      path: '/'
+      fullPath: '/tenant/'
+      preLoaderRoute: typeof AuthenticatedTenantIndexRouteImport
+      parentRoute: typeof AuthenticatedTenantRoute
+    }
+    '/_authenticated/landlord/': {
+      id: '/_authenticated/landlord/'
+      path: '/'
+      fullPath: '/landlord/'
+      preLoaderRoute: typeof AuthenticatedLandlordIndexRouteImport
+      parentRoute: typeof AuthenticatedLandlordRoute
+    }
   }
 }
 
+interface AuthenticatedLandlordRouteChildren {
+  AuthenticatedLandlordIndexRoute: typeof AuthenticatedLandlordIndexRoute
+}
+
+const AuthenticatedLandlordRouteChildren: AuthenticatedLandlordRouteChildren = {
+  AuthenticatedLandlordIndexRoute: AuthenticatedLandlordIndexRoute,
+}
+
+const AuthenticatedLandlordRouteWithChildren =
+  AuthenticatedLandlordRoute._addFileChildren(
+    AuthenticatedLandlordRouteChildren,
+  )
+
+interface AuthenticatedTenantRouteChildren {
+  AuthenticatedTenantIndexRoute: typeof AuthenticatedTenantIndexRoute
+}
+
+const AuthenticatedTenantRouteChildren: AuthenticatedTenantRouteChildren = {
+  AuthenticatedTenantIndexRoute: AuthenticatedTenantIndexRoute,
+}
+
+const AuthenticatedTenantRouteWithChildren =
+  AuthenticatedTenantRoute._addFileChildren(AuthenticatedTenantRouteChildren)
+
 interface AuthenticatedRouteChildren {
-  AuthenticatedLandlordRoute: typeof AuthenticatedLandlordRoute
-  AuthenticatedTenantRoute: typeof AuthenticatedTenantRoute
+  AuthenticatedLandlordRoute: typeof AuthenticatedLandlordRouteWithChildren
+  AuthenticatedTenantRoute: typeof AuthenticatedTenantRouteWithChildren
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
-  AuthenticatedLandlordRoute: AuthenticatedLandlordRoute,
-  AuthenticatedTenantRoute: AuthenticatedTenantRoute,
+  AuthenticatedLandlordRoute: AuthenticatedLandlordRouteWithChildren,
+  AuthenticatedTenantRoute: AuthenticatedTenantRouteWithChildren,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
@@ -173,9 +285,11 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
+  BrowseRoute: BrowseRoute,
   DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
+  RoomsRoomIdRoute: RoomsRoomIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
