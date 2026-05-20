@@ -448,22 +448,24 @@ function RoomDialog({
             />
           </div>
           <div className="grid gap-2">
-            <Label>Refundable deposit</Label>
-            <Input
-              type="number"
-              value={deposit}
-              onChange={(e) => setDeposit(e.target.value)}
-            />
-            <p className="text-[10px] text-muted-foreground">Returned at lease end.</p>
-          </div>
-          <div className="grid gap-2">
-            <Label>First payment</Label>
+            <Label>First-year payment</Label>
             <Input
               type="number"
               value={firstPayment}
               onChange={(e) => setFirstPayment(e.target.value)}
             />
-            <p className="text-[10px] text-muted-foreground">Due at move-in.</p>
+            <p className="text-[10px] text-muted-foreground">Due at move-in (year 1).</p>
+          </div>
+          <div className="grid gap-2">
+            <Label>Renewal payment</Label>
+            <Input
+              type="number"
+              value={renewalPayment}
+              onChange={(e) => setRenewalPayment(e.target.value)}
+            />
+            <p className="text-[10px] text-muted-foreground">
+              Charged at each yearly renewal (year 2+). Not refundable.
+            </p>
           </div>
         </div>
 
