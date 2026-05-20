@@ -748,3 +748,281 @@ function TimelineStep({
   );
 }
 
+/* ---------- SCENE: Building rises floor-by-floor as you scroll ---------- */
+function BuildingScene() {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start 80%", "end 30%"],
+  });
+  const sp = useSpring(scrollYProgress, { stiffness: 60, damping: 20 });
+
+  const floors = 6;
+  const groundY = useTransform(sp, [0, 0.15], [40, 0]);
+  const sunY = useTransform(sp, [0, 1], [120, -40]);
+  const sunOpacity = useTransform(sp, [0.05, 0.4, 1], [0, 1, 1]);
+  const starOpacity = useTransform(sp, [0, 0.3, 0.6], [0.9, 0.4, 0]);
+
+  return (
+    <section ref={ref} className="relative overflow-hidden border-y bg-primary-deep py-24 text-primary-foreground">
+      {/* Sky */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(to bottom, hsl(225 60% 14%), hsl(245 50% 28%) 60%, hsl(28 70% 40%))",
+        }}
+      />
+      {/* Sun/moon rising */}
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute right-[12%] h-40 w-40 rounded-full"
+        style={{
+          top: "20%",
+          y: sunY,
+          opacity: sunOpacity,
+          background:
+            "radial-gradient(closest-side, color-mix(in oklab, var(--gold) 90%, white), color-mix(in oklab, var(--gold) 40%, transparent) 60%, transparent 80%)",
+          filter: "blur(2px)",
+        }}
+      />
+      {/* Stars early on */}
+      {[...Array(30)].map((_, i) => (
+        <motion.span
+          key={i}
+          aria-hidden
+          className="absolute h-0.5 w-0.5 rounded-full bg-white"
+          style={{
+            top: `${(i * 17) % 50}%`,
+            left: `${(i * 31) % 100}%`,
+            opacity: starOpacity,
+          }}
+        />
+      ))}
+
+      <div className="container relative mx-auto grid items-center gap-12 px-4 md:grid-cols-2">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.7 }}
+        >
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-3 py-1 text-xs font-medium">
+            <Sparkles className="h-3 w-3" /> Watch it come together
+          </span>
+          <h2 className="mt-4 font-display text-4xl font-semibold tracking-tight md:text-5xl">
+            Every floor.{" "}
+            <span className="bg-gradient-to-r from-gold to-primary-foreground bg-clip-text text-transparent italic">
+              Every tenant.
+            </span>{" "}
+            Always lit.
+          </h2>
+          <p className="mt-4 max-w-md text-primary-foreground/70">
+            As you scroll, your portfolio comes to life — units fill, lights turn on, rent rolls in.
+            That's how TenApp feels day to day.
+          </p>
+          <ul className="mt-8 space-y-3 text-sm">
+            {["Live occupancy at a glance", "Real-time rent ledger", "Maintenance status per unit"].map((t, i) => (
+              <motion.li
+                key={t}
+                className="flex items-center gap-2 text-primary-foreground/85"
+                initial={{ opacity: 0, x: -16 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "-80px" }}
+                transition={{ delay: 0.2 + i * 0.1, duration: 0.5 }}
+              >
+                <CheckCircle2 className="h-4 w-4 text-gold" /> {t}
+              </motion.li>
+            ))}
+          </ul>
+        </motion.div>
+
+        {/* The building */}
+        <motion.div style={{ y: groundY }} className="relative h-[460px]">
+          <div aria-hidden className="absolute inset-x-8 bottom-2 h-6 rounded-[100%] bg-black/40 blur-xl" />
+          <div className="absolute inset-x-0 bottom-0 mx-auto flex w-[260px] flex-col-reverse">
+            {Array.from({ length: floors }).map((_, idx) => {
+              const start = 0.15 + idx * 0.12;
+              const end = start + 0.12;
+              return <BuildingFloor key={idx} progress={sp} start={start} end={end} index={idx} />;
+            })}
+            <FloorRoof progress={sp} />
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+function BuildingFloor({
+  progress,
+  start,
+  end,
+  index,
+}: {
+  progress: MotionValue<number>;
+  start: number;
+  end: number;
+  index: number;
+}) {
+  const scaleY = useTransform(progress, [start, end], [0, 1]);
+  const opacity = useTransform(progress, [start, start + 0.02], [0, 1]);
+  const lightOn = useTransform(progress, [end, end + 0.08], [0, 1]);
+
+  return (
+    <motion.div
+      style={{ scaleY, opacity, originY: 1 }}
+      className="relative mt-1 h-[62px] rounded-md border border-white/10 bg-gradient-to-b from-white/[0.07] to-white/[0.02]"
+    >
+      <div className="grid h-full grid-cols-4 gap-2 p-2">
+        {Array.from({ length: 4 }).map((_, w) => (
+          <Window key={w} lightOn={lightOn} lit={(index + w) % 3 !== 0} />
+        ))}
+      </div>
+    </motion.div>
+  );
+}
+
+function Window({ lightOn, lit }: { lightOn: MotionValue<number>; lit: boolean }) {
+  const bg = useTransform(
+    lightOn,
+    [0, 1],
+    lit
+      ? ["rgba(255,255,255,0.04)", "rgba(255, 210, 120, 0.85)"]
+      : ["rgba(255,255,255,0.03)", "rgba(255,255,255,0.08)"],
+  );
+  const shadow = useTransform(
+    lightOn,
+    [0, 1],
+    lit ? ["0 0 0px rgba(255,200,100,0)", "0 0 14px rgba(255,200,100,0.6)"] : ["none", "none"],
+  );
+  return <motion.span className="rounded-sm border border-white/10" style={{ backgroundColor: bg, boxShadow: shadow }} />;
+}
+
+function FloorRoof({ progress }: { progress: MotionValue<number> }) {
+  const scaleY = useTransform(progress, [0.9, 1], [0, 1]);
+  const opacity = useTransform(progress, [0.9, 0.95], [0, 1]);
+  return (
+    <motion.div
+      style={{ scaleY, opacity, originY: 1 }}
+      className="relative mx-auto mt-1 h-3 w-[80%] rounded-t-md bg-gradient-to-b from-gold to-gold/60 shadow-lg shadow-gold/30"
+    />
+  );
+}
+
+/* ---------- SCENE: Rent payments roll in ---------- */
+function RentFlowScene() {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start 85%", "end 20%"],
+  });
+  const sp = useSpring(scrollYProgress, { stiffness: 80, damping: 22 });
+  const ledgerY = useTransform(sp, [0, 1], [40, -40]);
+  const total = useTransform(sp, [0.1, 0.9], [0, 12480]);
+  const [displayTotal, setDisplayTotal] = useState(0);
+  useEffect(() => total.on("change", (v) => setDisplayTotal(Math.round(v))), [total]);
+
+  const payments = [
+    { unit: "A-101", name: "Maya O.", amount: 1420 },
+    { unit: "A-204", name: "James W.", amount: 1180 },
+    { unit: "B-110", name: "Priya S.", amount: 1320 },
+    { unit: "A-305", name: "Tomás R.", amount: 1100 },
+    { unit: "C-202", name: "Aisha K.", amount: 1560 },
+    { unit: "B-118", name: "Noah B.", amount: 980 },
+  ];
+
+  return (
+    <section ref={ref} className="relative overflow-hidden bg-background py-28">
+      <div className="container relative mx-auto grid items-center gap-12 px-4 md:grid-cols-2">
+        <motion.div style={{ y: ledgerY }} className="relative order-2 md:order-1">
+          <div className="relative rounded-3xl border bg-card p-6 shadow-2xl shadow-primary/10">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-xs uppercase tracking-wider text-muted-foreground">
+                  Rent ledger · This month
+                </div>
+                <div className="mt-1 font-display text-3xl font-semibold text-primary-deep">
+                  ${displayTotal.toLocaleString()}
+                </div>
+              </div>
+              <motion.div
+                className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary"
+                animate={{ scale: [1, 1.06, 1] }}
+                transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+              >
+                Live
+              </motion.div>
+            </div>
+            <ul className="mt-5 space-y-2">
+              {payments.map((p, i) => (
+                <PaymentRow key={p.unit} payment={p} progress={sp} index={i} />
+              ))}
+            </ul>
+          </div>
+        </motion.div>
+
+        <motion.div
+          className="order-1 md:order-2"
+          initial={{ opacity: 0, x: 30 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.6 }}
+        >
+          <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-medium text-primary-deep">
+            <Receipt className="h-3 w-3" /> Payments
+          </span>
+          <h2 className="mt-4 font-display text-4xl font-semibold tracking-tight md:text-5xl">
+            Watch the rent{" "}
+            <span className="bg-gradient-to-r from-primary via-primary-deep to-gold bg-clip-text text-transparent italic">
+              roll in
+            </span>
+            .
+          </h2>
+          <p className="mt-4 max-w-md text-muted-foreground">
+            Every payment a tenant logs lands in your ledger in real time. Receipts are issued
+            automatically — balances never go stale again.
+          </p>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+function PaymentRow({
+  payment,
+  progress,
+  index,
+}: {
+  payment: { unit: string; name: string; amount: number };
+  progress: MotionValue<number>;
+  index: number;
+}) {
+  const t = 0.12 + index * 0.12;
+  const opacity = useTransform(progress, [t, t + 0.04], [0, 1]);
+  const x = useTransform(progress, [t, t + 0.06], [40, 0]);
+  const barW = useTransform(progress, [t, t + 0.18], ["0%", "100%"]);
+
+  return (
+    <motion.li
+      style={{ opacity, x }}
+      className="relative overflow-hidden rounded-xl border bg-muted/30 px-3 py-2"
+    >
+      <motion.div aria-hidden className="absolute inset-y-0 left-0 -z-10 bg-primary/10" style={{ width: barW }} />
+      <div className="flex items-center justify-between text-sm">
+        <div className="flex items-center gap-3">
+          <span className="grid h-7 w-7 place-items-center rounded-md bg-primary/15 text-[10px] font-semibold text-primary">
+            {payment.unit}
+          </span>
+          <span className="font-medium">{payment.name}</span>
+        </div>
+        <span className="font-display text-base font-semibold text-primary-deep">
+          +${payment.amount.toLocaleString()}
+        </span>
+      </div>
+    </motion.li>
+  );
+}
+
+
