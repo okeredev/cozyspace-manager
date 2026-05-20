@@ -284,8 +284,8 @@ function RoomDetailPage() {
                     </span>
                   </div>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    {leaseMonths}-month lease · ${firstPayment.toFixed(0)} due at
-                    move-in · ${deposit.toFixed(0)} refundable deposit
+                    {leaseMonths}-month lease · ${firstPayment.toFixed(0)} for year
+                    1 · ${renewalPayment.toFixed(0)} per renewal year
                   </p>
                 </div>
 
