@@ -16,6 +16,7 @@ import { Route as BrowseRouteImport } from './routes/browse'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RoomsRoomIdRouteImport } from './routes/rooms.$roomId'
+import { Route as InviteTokenRouteImport } from './routes/invite.$token'
 import { Route as AuthenticatedTenantRouteImport } from './routes/_authenticated/tenant'
 import { Route as AuthenticatedLandlordRouteImport } from './routes/_authenticated/landlord'
 import { Route as AuthenticatedTenantIndexRouteImport } from './routes/_authenticated/tenant/index'
@@ -68,6 +69,11 @@ const IndexRoute = IndexRouteImport.update({
 const RoomsRoomIdRoute = RoomsRoomIdRouteImport.update({
   id: '/rooms/$roomId',
   path: '/rooms/$roomId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InviteTokenRoute = InviteTokenRouteImport.update({
+  id: '/invite/$token',
+  path: '/invite/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedTenantRoute = AuthenticatedTenantRouteImport.update({
@@ -191,6 +197,7 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/landlord': typeof AuthenticatedLandlordRouteWithChildren
   '/tenant': typeof AuthenticatedTenantRouteWithChildren
+  '/invite/$token': typeof InviteTokenRoute
   '/rooms/$roomId': typeof RoomsRoomIdRoute
   '/landlord/announcements': typeof AuthenticatedLandlordAnnouncementsRoute
   '/landlord/labels': typeof AuthenticatedLandlordLabelsRoute
@@ -216,6 +223,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/invite/$token': typeof InviteTokenRoute
   '/rooms/$roomId': typeof RoomsRoomIdRoute
   '/landlord/announcements': typeof AuthenticatedLandlordAnnouncementsRoute
   '/landlord/labels': typeof AuthenticatedLandlordLabelsRoute
@@ -245,6 +253,7 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/_authenticated/landlord': typeof AuthenticatedLandlordRouteWithChildren
   '/_authenticated/tenant': typeof AuthenticatedTenantRouteWithChildren
+  '/invite/$token': typeof InviteTokenRoute
   '/rooms/$roomId': typeof RoomsRoomIdRoute
   '/_authenticated/landlord/announcements': typeof AuthenticatedLandlordAnnouncementsRoute
   '/_authenticated/landlord/labels': typeof AuthenticatedLandlordLabelsRoute
@@ -274,6 +283,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/landlord'
     | '/tenant'
+    | '/invite/$token'
     | '/rooms/$roomId'
     | '/landlord/announcements'
     | '/landlord/labels'
@@ -299,6 +309,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/signup'
+    | '/invite/$token'
     | '/rooms/$roomId'
     | '/landlord/announcements'
     | '/landlord/labels'
@@ -327,6 +338,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/_authenticated/landlord'
     | '/_authenticated/tenant'
+    | '/invite/$token'
     | '/rooms/$roomId'
     | '/_authenticated/landlord/announcements'
     | '/_authenticated/landlord/labels'
@@ -354,6 +366,7 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
+  InviteTokenRoute: typeof InviteTokenRoute
   RoomsRoomIdRoute: typeof RoomsRoomIdRoute
 }
 
@@ -406,6 +419,13 @@ declare module '@tanstack/react-router' {
       path: '/rooms/$roomId'
       fullPath: '/rooms/$roomId'
       preLoaderRoute: typeof RoomsRoomIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/invite/$token': {
+      id: '/invite/$token'
+      path: '/invite/$token'
+      fullPath: '/invite/$token'
+      preLoaderRoute: typeof InviteTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/tenant': {
@@ -620,18 +640,9 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
+  InviteTokenRoute: InviteTokenRoute,
   RoomsRoomIdRoute: RoomsRoomIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

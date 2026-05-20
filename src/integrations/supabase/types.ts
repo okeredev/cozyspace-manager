@@ -579,6 +579,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      accept_invitation: {
+        Args: { _token: string }
+        Returns: {
+          invitation_id: string
+          landlord_id: string
+        }[]
+      }
+      expire_old_invitations: { Args: never; Returns: undefined }
       get_user_roles: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"][]
@@ -589,6 +597,20 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      lookup_invitation_by_token: {
+        Args: { _token: string }
+        Returns: {
+          email: string
+          expires_at: string
+          id: string
+          landlord_id: string
+          landlord_name: string
+          property_name: string
+          room_id: string
+          room_name: string
+          status: Database["public"]["Enums"]["invitation_status"]
+        }[]
       }
       room_landlord: { Args: { _room_id: string }; Returns: string }
     }
