@@ -27,6 +27,9 @@ function LandlordShell() {
           <header className="flex h-14 items-center gap-3 border-b bg-background/80 px-4 backdrop-blur">
             <SidebarTrigger />
             <span className="text-sm text-muted-foreground">Landlord console</span>
+            <div className="ml-auto">
+              <NotificationsBell />
+            </div>
           </header>
           <main className="flex-1 overflow-auto">
             <Outlet />
