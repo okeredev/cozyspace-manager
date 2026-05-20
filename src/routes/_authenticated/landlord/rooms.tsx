@@ -58,6 +58,7 @@ type Room = {
   price: number;
   deposit: number;
   first_payment: number;
+  renewal_payment: number;
   lease_duration_months: number;
   capacity: number;
   status: RoomStatus;
