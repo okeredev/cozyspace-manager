@@ -159,7 +159,7 @@ export function NotificationsBell() {
                   <li key={n.id} className={cn(!n.read_at && "bg-muted/30")}>
                     {n.link ? (
                       <Link
-                        to={n.link}
+                        to={n.link as string}
                         onClick={onClick}
                         className="block px-4 py-3 transition-colors hover:bg-muted/60"
                       >
