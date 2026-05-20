@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Home, Receipt, Wrench, Megaphone } from "lucide-react";
+import { Home, Receipt, Wrench, Megaphone, Building2, DoorOpen } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/tenant/")({
   component: TenantDashboard,
@@ -26,6 +26,21 @@ function TenantDashboard() {
         .limit(1)
         .maybeSingle();
       return data;
+    },
+  });
+
+  // Properties from landlords who invited this tenant (RLS scopes results)
+  const { data: landlordProperties } = useQuery({
+    queryKey: ["tenant-landlord-properties", user?.id],
+    enabled: !!user,
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("properties")
+        .select(
+          "id, name, address, city, cover_image_url, landlord_id, rooms(id, name, price, status, photos, is_listed)"
+        )
+        .order("created_at", { ascending: false });
+      return data ?? [];
     },
   });
 
@@ -82,6 +97,50 @@ function TenantDashboard() {
           </CardContent>
         </Card>
       )}
+
+      {landlordProperties && landlordProperties.length > 0 && (
+        <section>
+          <div className="mb-3 flex items-center gap-2">
+            <Building2 className="h-5 w-5 text-primary" />
+            <h2 className="font-display text-xl">Your landlord's properties</h2>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2">
+            {landlordProperties.map((p: any) => (
+              <Card key={p.id} className="overflow-hidden">
+                {p.cover_image_url && (
+                  <img src={p.cover_image_url} alt={p.name} className="h-40 w-full object-cover" />
+                )}
+                <CardContent className="space-y-3 p-5">
+                  <div>
+                    <div className="font-display text-lg">{p.name}</div>
+                    <div className="text-sm text-muted-foreground">
+                      {p.address}{p.city ? `, ${p.city}` : ""}
+                    </div>
+                  </div>
+                  {p.rooms?.length ? (
+                    <ul className="space-y-1.5 text-sm">
+                      {p.rooms.map((r: any) => (
+                        <li key={r.id} className="flex items-center justify-between rounded-md border bg-muted/30 px-3 py-2">
+                          <span className="flex items-center gap-2">
+                            <DoorOpen className="h-4 w-4 text-muted-foreground" />
+                            {r.name}
+                            <span className="text-xs capitalize text-muted-foreground">· {r.status}</span>
+                          </span>
+                          <span className="font-display">₦{Number(r.price).toLocaleString()}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">No rooms listed yet.</p>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </section>
+      )}
+
+
 
       <div className="grid gap-4 sm:grid-cols-3">
         {[
