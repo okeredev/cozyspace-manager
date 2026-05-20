@@ -39,6 +39,7 @@ import { Route as AuthenticatedLandlordLeasesRouteImport } from './routes/_authe
 import { Route as AuthenticatedLandlordLabelsRouteImport } from './routes/_authenticated/landlord/labels'
 import { Route as AuthenticatedLandlordAnnouncementsRouteImport } from './routes/_authenticated/landlord/announcements'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin/users'
+import { Route as AuthenticatedAdminTicketsRouteImport } from './routes/_authenticated/admin/tickets'
 import { Route as AuthenticatedAdminPropertiesRouteImport } from './routes/_authenticated/admin/properties'
 import { Route as AuthenticatedAdminPaymentsRouteImport } from './routes/_authenticated/admin/payments'
 
@@ -208,6 +209,12 @@ const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
   path: '/users',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedAdminTicketsRoute =
+  AuthenticatedAdminTicketsRouteImport.update({
+    id: '/tickets',
+    path: '/tickets',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminPropertiesRoute =
   AuthenticatedAdminPropertiesRouteImport.update({
     id: '/properties',
@@ -234,6 +241,7 @@ export interface FileRoutesByFullPath {
   '/rooms/$roomId': typeof RoomsRoomIdRoute
   '/admin/payments': typeof AuthenticatedAdminPaymentsRoute
   '/admin/properties': typeof AuthenticatedAdminPropertiesRoute
+  '/admin/tickets': typeof AuthenticatedAdminTicketsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/landlord/announcements': typeof AuthenticatedLandlordAnnouncementsRoute
   '/landlord/labels': typeof AuthenticatedLandlordLabelsRoute
@@ -264,6 +272,7 @@ export interface FileRoutesByTo {
   '/rooms/$roomId': typeof RoomsRoomIdRoute
   '/admin/payments': typeof AuthenticatedAdminPaymentsRoute
   '/admin/properties': typeof AuthenticatedAdminPropertiesRoute
+  '/admin/tickets': typeof AuthenticatedAdminTicketsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/landlord/announcements': typeof AuthenticatedLandlordAnnouncementsRoute
   '/landlord/labels': typeof AuthenticatedLandlordLabelsRoute
@@ -299,6 +308,7 @@ export interface FileRoutesById {
   '/rooms/$roomId': typeof RoomsRoomIdRoute
   '/_authenticated/admin/payments': typeof AuthenticatedAdminPaymentsRoute
   '/_authenticated/admin/properties': typeof AuthenticatedAdminPropertiesRoute
+  '/_authenticated/admin/tickets': typeof AuthenticatedAdminTicketsRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/landlord/announcements': typeof AuthenticatedLandlordAnnouncementsRoute
   '/_authenticated/landlord/labels': typeof AuthenticatedLandlordLabelsRoute
@@ -334,6 +344,7 @@ export interface FileRouteTypes {
     | '/rooms/$roomId'
     | '/admin/payments'
     | '/admin/properties'
+    | '/admin/tickets'
     | '/admin/users'
     | '/landlord/announcements'
     | '/landlord/labels'
@@ -364,6 +375,7 @@ export interface FileRouteTypes {
     | '/rooms/$roomId'
     | '/admin/payments'
     | '/admin/properties'
+    | '/admin/tickets'
     | '/admin/users'
     | '/landlord/announcements'
     | '/landlord/labels'
@@ -398,6 +410,7 @@ export interface FileRouteTypes {
     | '/rooms/$roomId'
     | '/_authenticated/admin/payments'
     | '/_authenticated/admin/properties'
+    | '/_authenticated/admin/tickets'
     | '/_authenticated/admin/users'
     | '/_authenticated/landlord/announcements'
     | '/_authenticated/landlord/labels'
@@ -642,6 +655,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminUsersRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/tickets': {
+      id: '/_authenticated/admin/tickets'
+      path: '/tickets'
+      fullPath: '/admin/tickets'
+      preLoaderRoute: typeof AuthenticatedAdminTicketsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/properties': {
       id: '/_authenticated/admin/properties'
       path: '/properties'
@@ -662,6 +682,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminPaymentsRoute: typeof AuthenticatedAdminPaymentsRoute
   AuthenticatedAdminPropertiesRoute: typeof AuthenticatedAdminPropertiesRoute
+  AuthenticatedAdminTicketsRoute: typeof AuthenticatedAdminTicketsRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
@@ -669,6 +690,7 @@ interface AuthenticatedAdminRouteChildren {
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminPaymentsRoute: AuthenticatedAdminPaymentsRoute,
   AuthenticatedAdminPropertiesRoute: AuthenticatedAdminPropertiesRoute,
+  AuthenticatedAdminTicketsRoute: AuthenticatedAdminTicketsRoute,
   AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
