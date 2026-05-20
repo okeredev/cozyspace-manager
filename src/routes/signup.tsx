@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Building2, CheckCircle2 } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
+import { BrandMark } from "@/components/brand-mark";
 
 const schema = z.object({
   fullName: z.string().trim().min(2, "Enter your full name").max(120),
@@ -15,12 +16,17 @@ const schema = z.object({
 });
 
 export const Route = createFileRoute("/signup")({
+  validateSearch: (s: Record<string, unknown>) => ({
+    invite: typeof s.invite === "string" ? s.invite : undefined,
+  }),
   component: SignupPage,
-  head: () => ({ meta: [{ title: "Create your landlord account — RentHub" }] }),
+  head: () => ({ meta: [{ title: "Create your account — TenApp" }] }),
 });
 
 function SignupPage() {
   const nav = useNavigate();
+  const search = Route.useSearch();
+  const isInvite = !!search.invite;
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -34,14 +40,17 @@ function SignupPage() {
       return;
     }
     setBusy(true);
+    const redirectAfter = isInvite
+      ? `${window.location.origin}/invite/${search.invite}`
+      : `${window.location.origin}/login`;
     const { error } = await supabase.auth.signUp({
       email: parsed.data.email,
       password: parsed.data.password,
       options: {
-        emailRedirectTo: `${window.location.origin}/login`,
+        emailRedirectTo: redirectAfter,
         data: {
           full_name: parsed.data.fullName,
-          role: "landlord",
+          role: isInvite ? "tenant" : "landlord",
         },
       },
     });
@@ -51,41 +60,55 @@ function SignupPage() {
       return;
     }
     toast.success("Account created. Check your email to confirm, then sign in.");
-    nav({ to: "/login" });
+    nav({ to: "/login", search: isInvite ? { redirect: `/invite/${search.invite}` } : {} });
   }
 
   return (
     <div className="grid min-h-screen md:grid-cols-2">
       <div className="hidden flex-col justify-between bg-primary-deep p-12 text-primary-foreground md:flex">
         <Link to="/" className="flex items-center gap-2">
-          <span className="grid h-9 w-9 place-items-center rounded-lg bg-gold text-gold-foreground">
-            <Building2 className="h-5 w-5" />
-          </span>
-          <span className="font-display text-xl">RentHub</span>
+          <BrandMark className="h-9 w-9" />
+          <span className="font-display text-xl">TenApp</span>
         </Link>
         <div>
           <h2 className="font-display text-4xl leading-tight">
-            Run your properties like a real operator.
+            {isInvite
+              ? "Welcome — your home is one step away."
+              : "Run your properties like a real operator."}
           </h2>
           <ul className="mt-6 space-y-3 text-sm opacity-90">
-            {[
-              "Unlimited properties, rooms, and tenants",
-              "Invite tenants by email — they never see other tenants",
-              "Record rent, generate receipts, track balances",
-              "Maintenance tickets with photos and statuses",
-            ].map((t) => (
+            {(isInvite
+              ? [
+                  "Pay rent and view receipts in one place",
+                  "Raise maintenance tickets with photos",
+                  "See announcements from your landlord",
+                  "Manage your lease and personal profile",
+                ]
+              : [
+                  "Unlimited properties, rooms, and tenants",
+                  "Invite tenants by email — they never see other tenants",
+                  "Record rent, generate receipts, track balances",
+                  "Maintenance tickets with photos and statuses",
+                ]
+            ).map((t) => (
               <li key={t} className="flex items-start gap-2">
                 <CheckCircle2 className="mt-0.5 h-4 w-4 text-gold" /> {t}
               </li>
             ))}
           </ul>
         </div>
-        <p className="text-sm opacity-60">Tenants join by invitation only.</p>
+        <p className="text-sm opacity-60">
+          {isInvite
+            ? "You were sent a private invitation."
+            : "Tenants join by invitation only."}
+        </p>
       </div>
 
       <div className="flex items-center justify-center px-6 py-12">
         <div className="w-full max-w-sm">
-          <h1 className="font-display text-3xl font-semibold">Create your landlord account</h1>
+          <h1 className="font-display text-3xl font-semibold">
+            {isInvite ? "Accept your invitation" : "Create your landlord account"}
+          </h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Already registered?{" "}
             <Link to="/login" className="font-medium text-primary hover:underline">
