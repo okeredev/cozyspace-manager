@@ -193,107 +193,147 @@ function Landing() {
             </ul>
           </motion.div>
 
-          {/* 3D-tilting dashboard card with floating accents */}
+          {/* Floating 3D isometric building / room cards */}
           <motion.div
-            className="relative [perspective:1200px]"
+            className="relative h-[520px] [perspective:1400px]"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.15, ease: "easeOut" }}
           >
-            {/* Floating accent dots */}
-            <motion.div
+            {/* Ambient floor glow */}
+            <div
               aria-hidden
-              className="absolute -left-6 top-10 h-3 w-3 rounded-full bg-primary shadow-lg shadow-primary/50"
-              style={{ x: orb1X, y: orb1Y }}
-              animate={{ y: [0, -10, 0] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            />
-            <motion.div
-              aria-hidden
-              className="absolute -right-4 top-24 h-4 w-4 rounded-full bg-gold shadow-lg shadow-gold/40"
-              animate={{ y: [0, 12, 0] }}
-              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-            />
-            <motion.div
-              aria-hidden
-              className="absolute -bottom-4 left-10 h-2.5 w-2.5 rounded-full bg-primary-deep"
-              animate={{ y: [0, -8, 0], opacity: [0.6, 1, 0.6] }}
-              transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+              className="pointer-events-none absolute inset-x-8 bottom-6 h-28 rounded-[100%] blur-2xl"
+              style={{
+                background:
+                  "radial-gradient(closest-side, color-mix(in oklab, var(--primary) 35%, transparent), transparent 70%)",
+              }}
             />
 
+            {/* 3D scene that tilts with the mouse */}
             <motion.div
-              className="rounded-3xl border bg-card p-2 shadow-2xl shadow-primary-deep/20"
+              className="absolute inset-0"
               style={{
                 rotateX: tiltX,
                 rotateY: tiltY,
-                y: cardLift,
                 transformStyle: "preserve-3d",
               }}
             >
-              <div className="relative overflow-hidden rounded-2xl bg-primary-deep p-6 text-primary-foreground">
-                {/* Shimmer */}
-                <motion.div
-                  aria-hidden
-                  className="pointer-events-none absolute inset-0 -skew-x-12 bg-gradient-to-r from-transparent via-white/10 to-transparent"
-                  animate={{ x: ["-120%", "220%"] }}
-                  transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut", repeatDelay: 1.5 }}
-                />
-                <div className="flex items-center justify-between text-xs opacity-80">
-                  <span>Sunset Heights — Block A</span>
-                  <span className="rounded-full bg-gold px-2 py-0.5 text-[10px] font-semibold text-gold-foreground">
-                    92% occupied
-                  </span>
-                </div>
-                <div className="mt-6 grid grid-cols-3 gap-3">
-                  {[
-                    { n: "A-101", s: "Occupied", c: "bg-primary" },
-                    { n: "A-102", s: "Reserved", c: "bg-gold" },
-                    { n: "A-103", s: "Vacant", c: "bg-muted/40" },
-                    { n: "A-104", s: "Occupied", c: "bg-primary" },
-                    { n: "A-105", s: "Occupied", c: "bg-primary" },
-                    { n: "A-106", s: "Maintenance", c: "bg-destructive/70" },
-                  ].map((r, i) => (
-                    <motion.div
-                      key={r.n}
-                      className="rounded-xl border border-white/10 bg-white/5 p-3"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.5 + i * 0.06, duration: 0.4 }}
-                      whileHover={{ y: -2, backgroundColor: "rgba(255,255,255,0.1)" }}
-                    >
-                      <div className="text-sm font-semibold">{r.n}</div>
-                      <div className="mt-1 flex items-center gap-1.5 text-[10px] opacity-80">
+              {(() => {
+                const rooms = [
+                  { n: "A-301", s: "Occupied", price: "$1,420", accent: "bg-primary", top: "6%", left: "32%", z: 140, delay: 0 },
+                  { n: "A-204", s: "Reserved", price: "$1,180", accent: "bg-gold", top: "26%", left: "8%", z: 80, delay: 0.3 },
+                  { n: "A-205", s: "Vacant", price: "$1,050", accent: "bg-muted-foreground/60", top: "30%", left: "56%", z: 60, delay: 0.6 },
+                  { n: "A-102", s: "Occupied", price: "$980", accent: "bg-primary", top: "54%", left: "22%", z: 20, delay: 0.9 },
+                  { n: "A-106", s: "Maintenance", price: "—", accent: "bg-destructive/80", top: "58%", left: "58%", z: -20, delay: 1.2 },
+                ] as const;
+
+                return rooms.map((r, i) => (
+                  <motion.div
+                    key={r.n}
+                    className="absolute w-[58%] rounded-2xl border border-border/60 bg-card/90 p-4 shadow-2xl backdrop-blur-md"
+                    style={{
+                      top: r.top,
+                      left: r.left,
+                      transform: `translateZ(${r.z}px)`,
+                      transformStyle: "preserve-3d",
+                      boxShadow:
+                        "0 30px 60px -20px color-mix(in oklab, var(--primary-deep) 35%, transparent), 0 8px 20px -6px color-mix(in oklab, var(--primary) 20%, transparent)",
+                    }}
+                    initial={{ opacity: 0, y: 30, rotateZ: -4 }}
+                    animate={{
+                      opacity: 1,
+                      y: [0, -10, 0],
+                      rotateZ: i % 2 === 0 ? [-2, 1, -2] : [2, -1, 2],
+                    }}
+                    transition={{
+                      opacity: { duration: 0.6, delay: 0.2 + r.delay * 0.2 },
+                      y: { duration: 5 + i * 0.5, repeat: Infinity, ease: "easeInOut", delay: r.delay },
+                      rotateZ: { duration: 7 + i * 0.4, repeat: Infinity, ease: "easeInOut", delay: r.delay },
+                    }}
+                    whileHover={{ scale: 1.04, transition: { duration: 0.25 } }}
+                  >
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Room</div>
+                        <div className="font-display text-lg font-semibold">{r.n}</div>
+                      </div>
+                      <div className="flex items-center gap-1.5 rounded-full bg-muted/60 px-2 py-1 text-[10px] font-medium">
                         <motion.span
-                          className={`h-1.5 w-1.5 rounded-full ${r.c}`}
-                          animate={r.s === "Occupied" ? { scale: [1, 1.4, 1] } : {}}
+                          className={`h-1.5 w-1.5 rounded-full ${r.accent}`}
+                          animate={r.s === "Occupied" ? { scale: [1, 1.5, 1], opacity: [1, 0.5, 1] } : {}}
                           transition={{ duration: 2, repeat: Infinity, delay: i * 0.2 }}
                         />
                         {r.s}
                       </div>
-                    </motion.div>
-                  ))}
-                </div>
-                <div className="mt-6 grid grid-cols-2 gap-3 text-xs">
-                  <motion.div
-                    className="rounded-xl bg-white/5 p-3"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 1, duration: 0.5 }}
-                  >
-                    <div className="opacity-70">This month</div>
-                    <div className="mt-1 font-display text-2xl">$12,480</div>
+                    </div>
+                    <div className="mt-3 flex items-end justify-between">
+                      <div className="font-display text-xl font-semibold text-primary-deep">
+                        {r.price}
+                        <span className="ml-1 text-[10px] font-normal text-muted-foreground">/mo</span>
+                      </div>
+                      <div className="flex -space-x-1">
+                        {[0, 1, 2].map((k) => (
+                          <div
+                            key={k}
+                            className="h-5 w-5 rounded-full border-2 border-card"
+                            style={{
+                              background: `linear-gradient(135deg, color-mix(in oklab, var(--primary) ${30 + k * 20}%, var(--gold)), color-mix(in oklab, var(--primary-deep) 50%, transparent))`,
+                            }}
+                          />
+                        ))}
+                      </div>
+                    </div>
                   </motion.div>
-                  <motion.div
-                    className="rounded-xl bg-white/5 p-3"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 1.15, duration: 0.5 }}
-                  >
-                    <div className="opacity-70">Expiring soon</div>
-                    <div className="mt-1 font-display text-2xl">3 leases</div>
-                  </motion.div>
-                </div>
-              </div>
+                ));
+              })()}
+
+              {/* Floating accent particles in 3D space */}
+              <motion.div
+                aria-hidden
+                className="absolute left-[10%] top-[10%] h-2.5 w-2.5 rounded-full bg-primary shadow-lg shadow-primary/60"
+                style={{ transform: "translateZ(180px)" }}
+                animate={{ y: [0, -14, 0], opacity: [0.7, 1, 0.7] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              />
+              <motion.div
+                aria-hidden
+                className="absolute right-[6%] top-[18%] h-3 w-3 rounded-full bg-gold shadow-lg shadow-gold/50"
+                style={{ transform: "translateZ(220px)" }}
+                animate={{ y: [0, 16, 0] }}
+                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+              />
+              <motion.div
+                aria-hidden
+                className="absolute bottom-[8%] right-[18%] h-2 w-2 rounded-full bg-primary-deep"
+                style={{ transform: "translateZ(160px)" }}
+                animate={{ y: [0, -10, 0], opacity: [0.5, 1, 0.5] }}
+                transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+              />
+
+              {/* Connector lines hinting at a building structure */}
+              <svg
+                aria-hidden
+                className="pointer-events-none absolute inset-0 h-full w-full opacity-30"
+                style={{ transform: "translateZ(0px)" }}
+              >
+                <defs>
+                  <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stopColor="var(--primary)" stopOpacity="0.6" />
+                    <stop offset="100%" stopColor="var(--gold)" stopOpacity="0.2" />
+                  </linearGradient>
+                </defs>
+                <motion.path
+                  d="M 60 80 L 220 140 L 380 200 L 240 320 L 100 380"
+                  fill="none"
+                  stroke="url(#lineGrad)"
+                  strokeWidth="1.2"
+                  strokeDasharray="4 6"
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{ duration: 2, delay: 0.6, ease: "easeOut" }}
+                />
+              </svg>
             </motion.div>
           </motion.div>
         </motion.div>
