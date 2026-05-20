@@ -364,35 +364,9 @@ function Landing() {
         </motion.div>
       </section>
 
-      {/* STATS — animated counters */}
-      <section className="border-y bg-muted/30">
-        <div className="container mx-auto grid grid-cols-2 gap-8 px-4 py-12 md:grid-cols-4">
-          {[
-            { label: "Properties managed", value: 1240, suffix: "+" },
-            { label: "Rent collected", value: 4.8, suffix: "M", prefix: "₦", decimals: 1 },
-            { label: "Tickets resolved", value: 9620, suffix: "" },
-            { label: "Avg. response", value: 12, suffix: "m" },
-          ].map((s, i) => (
-            <motion.div
-              key={s.label}
-              initial={{ opacity: 0, y: 18 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="text-center"
-            >
-              <div className="font-display text-4xl font-semibold tracking-tight text-primary-deep md:text-5xl">
-                {s.prefix}
-                <Counter to={s.value} decimals={s.decimals ?? 0} />
-                {s.suffix}
-              </div>
-              <div className="mt-1 text-xs uppercase tracking-wider text-muted-foreground">
-                {s.label}
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </section>
+      {/* STATS — counters scrub with scroll */}
+      <StatsScene />
+
 
       {/* FEATURES */}
       <section id="features" className="relative container mx-auto px-4 py-24">
