@@ -108,8 +108,8 @@ function LeasePage() {
               </div>
 
               <div className="grid grid-cols-2 gap-4 border-t pt-4 sm:grid-cols-4">
-                <Stat icon={<DollarSign className="h-3 w-3" />} label="Rent" value={`$${Number(l.rent_amount).toFixed(0)}`} />
-                <Stat icon={<DollarSign className="h-3 w-3" />} label="Deposit" value={`$${Number(l.deposit_amount).toFixed(0)}`} />
+                <Stat icon={<DollarSign className="h-3 w-3" />} label="Rent" value={`₦${Number(l.rent_amount).toFixed(0)}`} />
+                <Stat icon={<DollarSign className="h-3 w-3" />} label="Deposit" value={`₦${Number(l.deposit_amount).toFixed(0)}`} />
                 <Stat icon={<Calendar className="h-3 w-3" />} label="Start" value={l.start_date} />
                 <Stat icon={<Calendar className="h-3 w-3" />} label="End" value={l.end_date} />
               </div>

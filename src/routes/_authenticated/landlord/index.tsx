@@ -88,7 +88,7 @@ function LandlordDashboard() {
         <Stat
           icon={Receipt}
           label="Revenue this month"
-          value={stats ? `$${stats.monthRevenue.toLocaleString()}` : "—"}
+          value={stats ? `₦${stats.monthRevenue.toLocaleString()}` : "—"}
         />
       </div>
 

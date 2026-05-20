@@ -244,10 +244,10 @@ function Landing() {
             >
               {(() => {
                 const rooms = [
-                  { n: "A-301", s: "Occupied", price: "$1,420", accent: "bg-primary", top: "6%", left: "32%", z: 140, delay: 0 },
-                  { n: "A-204", s: "Reserved", price: "$1,180", accent: "bg-gold", top: "26%", left: "8%", z: 80, delay: 0.3 },
-                  { n: "A-205", s: "Vacant", price: "$1,050", accent: "bg-muted-foreground/60", top: "30%", left: "56%", z: 60, delay: 0.6 },
-                  { n: "A-102", s: "Occupied", price: "$980", accent: "bg-primary", top: "54%", left: "22%", z: 20, delay: 0.9 },
+                  { n: "A-301", s: "Occupied", price: "₦1,420", accent: "bg-primary", top: "6%", left: "32%", z: 140, delay: 0 },
+                  { n: "A-204", s: "Reserved", price: "₦1,180", accent: "bg-gold", top: "26%", left: "8%", z: 80, delay: 0.3 },
+                  { n: "A-205", s: "Vacant", price: "₦1,050", accent: "bg-muted-foreground/60", top: "30%", left: "56%", z: 60, delay: 0.6 },
+                  { n: "A-102", s: "Occupied", price: "₦980", accent: "bg-primary", top: "54%", left: "22%", z: 20, delay: 0.9 },
                   { n: "A-106", s: "Maintenance", price: "—", accent: "bg-destructive/80", top: "58%", left: "58%", z: -20, delay: 1.2 },
                 ] as const;
 

@@ -156,9 +156,9 @@ function PaymentsPage() {
       </div>
 
       <div className="grid gap-3 sm:grid-cols-3">
-        <Stat label="Collected this month" value={`$${totals.thisMonth.toFixed(0)}`} icon={<TrendingUp className="h-4 w-4" />} />
-        <Stat label="Total paid" value={`$${totals.paid.toFixed(0)}`} icon={<DollarSign className="h-4 w-4" />} />
-        <Stat label="Pending" value={`$${totals.pending.toFixed(0)}`} icon={<Receipt className="h-4 w-4" />} />
+        <Stat label="Collected this month" value={`₦${totals.thisMonth.toFixed(0)}`} icon={<TrendingUp className="h-4 w-4" />} />
+        <Stat label="Total paid" value={`₦${totals.paid.toFixed(0)}`} icon={<DollarSign className="h-4 w-4" />} />
+        <Stat label="Pending" value={`₦${totals.pending.toFixed(0)}`} icon={<Receipt className="h-4 w-4" />} />
       </div>
 
       {leases.length === 0 ? (
