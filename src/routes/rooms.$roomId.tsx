@@ -31,6 +31,7 @@ type Room = {
   price: number;
   deposit: number;
   first_payment: number;
+  renewal_payment: number;
   lease_duration_months: number;
   capacity: number;
   status: "vacant" | "reserved" | "occupied" | "maintenance";
@@ -150,7 +151,7 @@ function RoomDetailPage() {
   const canRequest = !isLandlord && !!user && !existing && isAvailable;
   const leaseMonths = room.lease_duration_months ?? 12;
   const firstPayment = Number(room.first_payment) || 0;
-  const deposit = Number(room.deposit) || 0;
+  const renewalPayment = Number(room.renewal_payment) || 0;
   const moveInInPast = !!moveIn && moveIn < new Date().toISOString().slice(0, 10);
 
   return (
@@ -224,16 +225,17 @@ function RoomDetailPage() {
                 </div>
               </div>
               <div>
-                <div className="text-xs text-muted-foreground">First payment</div>
+                <div className="text-xs text-muted-foreground">First-year payment</div>
                 <div className="mt-1 font-display text-lg">
                   ${firstPayment.toFixed(0)}
                 </div>
               </div>
               <div>
-                <div className="text-xs text-muted-foreground">Refundable deposit</div>
+                <div className="text-xs text-muted-foreground">Renewal (yr 2+)</div>
                 <div className="mt-1 font-display text-lg">
-                  ${deposit.toFixed(0)}
+                  ${renewalPayment.toFixed(0)}
                 </div>
+                <div className="text-[10px] text-muted-foreground">Non-refundable</div>
               </div>
             </div>
 
@@ -282,8 +284,8 @@ function RoomDetailPage() {
                     </span>
                   </div>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    {leaseMonths}-month lease · ${firstPayment.toFixed(0)} due at
-                    move-in · ${deposit.toFixed(0)} refundable deposit
+                    {leaseMonths}-month lease · ${firstPayment.toFixed(0)} for year
+                    1 · ${renewalPayment.toFixed(0)} per renewal year
                   </p>
                 </div>
 

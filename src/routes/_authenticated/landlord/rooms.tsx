@@ -58,6 +58,7 @@ type Room = {
   price: number;
   deposit: number;
   first_payment: number;
+  renewal_payment: number;
   lease_duration_months: number;
   capacity: number;
   status: RoomStatus;
@@ -246,21 +247,27 @@ function RoomsPage() {
 
                   <div className="grid grid-cols-2 gap-2 text-sm">
                     <div>
-                      <div className="text-xs text-muted-foreground">Rent</div>
+                      <div className="text-xs text-muted-foreground">Rent / mo</div>
                       <div className="font-semibold">${Number(r.price).toFixed(0)}</div>
                     </div>
                     <div>
-                      <div className="text-xs text-muted-foreground">Deposit</div>
+                      <div className="text-xs text-muted-foreground">First year</div>
                       <div className="font-semibold">
-                        ${Number(r.deposit).toFixed(0)}
+                        ${Number(r.first_payment).toFixed(0)}
                       </div>
                     </div>
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <div>
+                      <div className="text-xs text-muted-foreground">Renewal (yr 2+)</div>
+                      <div className="font-semibold">
+                        ${Number(r.renewal_payment).toFixed(0)}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <span className="flex items-center gap-1">
                       <Users className="h-3 w-3" /> capacity {r.capacity}
-                    </div>
-                    <div className="text-right text-xs text-muted-foreground">
-                      {r.is_listed ? "Listed publicly" : "Not listed"}
-                    </div>
+                    </span>
+                    <span>{r.is_listed ? "Listed publicly" : "Not listed"}</span>
                   </div>
 
                   {lbl ? (
@@ -344,9 +351,11 @@ function RoomDialog({
   );
   const [description, setDescription] = useState(existing?.description ?? "");
   const [price, setPrice] = useState(existing?.price?.toString() ?? "0");
-  const [deposit, setDeposit] = useState(existing?.deposit?.toString() ?? "0");
   const [firstPayment, setFirstPayment] = useState(
     existing?.first_payment?.toString() ?? "0",
+  );
+  const [renewalPayment, setRenewalPayment] = useState(
+    existing?.renewal_payment?.toString() ?? "0",
   );
   const [leaseMonths, setLeaseMonths] = useState(
     existing?.lease_duration_months?.toString() ?? "12",
@@ -365,7 +374,8 @@ function RoomDialog({
         name: name.trim(),
         description: description.trim() || null,
         price: Number(price) || 0,
-        deposit: Number(deposit) || 0,
+        deposit: 0,
+        renewal_payment: Number(renewalPayment) || 0,
         first_payment: Number(firstPayment) || 0,
         lease_duration_months: Math.max(1, Number(leaseMonths) || 12),
         capacity: Math.max(1, Number(capacity) || 1),
@@ -438,22 +448,24 @@ function RoomDialog({
             />
           </div>
           <div className="grid gap-2">
-            <Label>Refundable deposit</Label>
-            <Input
-              type="number"
-              value={deposit}
-              onChange={(e) => setDeposit(e.target.value)}
-            />
-            <p className="text-[10px] text-muted-foreground">Returned at lease end.</p>
-          </div>
-          <div className="grid gap-2">
-            <Label>First payment</Label>
+            <Label>First-year payment</Label>
             <Input
               type="number"
               value={firstPayment}
               onChange={(e) => setFirstPayment(e.target.value)}
             />
-            <p className="text-[10px] text-muted-foreground">Due at move-in.</p>
+            <p className="text-[10px] text-muted-foreground">Due at move-in (year 1).</p>
+          </div>
+          <div className="grid gap-2">
+            <Label>Renewal payment</Label>
+            <Input
+              type="number"
+              value={renewalPayment}
+              onChange={(e) => setRenewalPayment(e.target.value)}
+            />
+            <p className="text-[10px] text-muted-foreground">
+              Charged at each yearly renewal (year 2+). Not refundable.
+            </p>
           </div>
         </div>
 

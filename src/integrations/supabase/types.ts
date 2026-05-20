@@ -471,6 +471,7 @@ export type Database = {
           photos: string[] | null
           price: number
           property_id: string
+          renewal_payment: number
           status: Database["public"]["Enums"]["room_status"]
           updated_at: string
         }
@@ -489,6 +490,7 @@ export type Database = {
           photos?: string[] | null
           price?: number
           property_id: string
+          renewal_payment?: number
           status?: Database["public"]["Enums"]["room_status"]
           updated_at?: string
         }
@@ -507,6 +509,7 @@ export type Database = {
           photos?: string[] | null
           price?: number
           property_id?: string
+          renewal_payment?: number
           status?: Database["public"]["Enums"]["room_status"]
           updated_at?: string
         }
