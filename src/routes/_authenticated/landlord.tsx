@@ -2,6 +2,7 @@ import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { LandlordSidebar } from "@/components/landlord-sidebar";
+import { NotificationsBell } from "@/components/notifications-bell";
 
 export const Route = createFileRoute("/_authenticated/landlord")({
   beforeLoad: async () => {
