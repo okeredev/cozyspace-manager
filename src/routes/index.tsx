@@ -464,6 +464,14 @@ function Landing() {
       {/* HOW IT WORKS — scroll-driven timeline */}
       <HowItWorks />
 
+      {/* SCENE: Building rises as you scroll */}
+      <BuildingScene />
+
+      {/* SCENE: Rent flowing in */}
+      <RentFlowScene />
+
+
+
       {/* TRUST MARQUEE */}
       <section className="border-y bg-muted/20 py-10">
         <div className="container mx-auto px-4">
