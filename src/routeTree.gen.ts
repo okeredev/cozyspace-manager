@@ -38,6 +38,7 @@ import { Route as AuthenticatedLandlordPaymentsRouteImport } from './routes/_aut
 import { Route as AuthenticatedLandlordLeasesRouteImport } from './routes/_authenticated/landlord/leases'
 import { Route as AuthenticatedLandlordLabelsRouteImport } from './routes/_authenticated/landlord/labels'
 import { Route as AuthenticatedLandlordAnnouncementsRouteImport } from './routes/_authenticated/landlord/announcements'
+import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin/users'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -200,6 +201,11 @@ const AuthenticatedLandlordAnnouncementsRoute =
     path: '/announcements',
     getParentRoute: () => AuthenticatedLandlordRoute,
   } as any)
+const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -212,6 +218,7 @@ export interface FileRoutesByFullPath {
   '/tenant': typeof AuthenticatedTenantRouteWithChildren
   '/invite/$token': typeof InviteTokenRoute
   '/rooms/$roomId': typeof RoomsRoomIdRoute
+  '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/landlord/announcements': typeof AuthenticatedLandlordAnnouncementsRoute
   '/landlord/labels': typeof AuthenticatedLandlordLabelsRoute
   '/landlord/leases': typeof AuthenticatedLandlordLeasesRoute
@@ -239,6 +246,7 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/invite/$token': typeof InviteTokenRoute
   '/rooms/$roomId': typeof RoomsRoomIdRoute
+  '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/landlord/announcements': typeof AuthenticatedLandlordAnnouncementsRoute
   '/landlord/labels': typeof AuthenticatedLandlordLabelsRoute
   '/landlord/leases': typeof AuthenticatedLandlordLeasesRoute
@@ -271,6 +279,7 @@ export interface FileRoutesById {
   '/_authenticated/tenant': typeof AuthenticatedTenantRouteWithChildren
   '/invite/$token': typeof InviteTokenRoute
   '/rooms/$roomId': typeof RoomsRoomIdRoute
+  '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/landlord/announcements': typeof AuthenticatedLandlordAnnouncementsRoute
   '/_authenticated/landlord/labels': typeof AuthenticatedLandlordLabelsRoute
   '/_authenticated/landlord/leases': typeof AuthenticatedLandlordLeasesRoute
@@ -303,6 +312,7 @@ export interface FileRouteTypes {
     | '/tenant'
     | '/invite/$token'
     | '/rooms/$roomId'
+    | '/admin/users'
     | '/landlord/announcements'
     | '/landlord/labels'
     | '/landlord/leases'
@@ -330,6 +340,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/invite/$token'
     | '/rooms/$roomId'
+    | '/admin/users'
     | '/landlord/announcements'
     | '/landlord/labels'
     | '/landlord/leases'
@@ -361,6 +372,7 @@ export interface FileRouteTypes {
     | '/_authenticated/tenant'
     | '/invite/$token'
     | '/rooms/$roomId'
+    | '/_authenticated/admin/users'
     | '/_authenticated/landlord/announcements'
     | '/_authenticated/landlord/labels'
     | '/_authenticated/landlord/leases'
@@ -597,14 +609,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedLandlordAnnouncementsRouteImport
       parentRoute: typeof AuthenticatedLandlordRoute
     }
+    '/_authenticated/admin/users': {
+      id: '/_authenticated/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AuthenticatedAdminUsersRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
   }
 }
 
 interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
 
