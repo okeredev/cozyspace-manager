@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
  * Used right after sign-in so the caller doesn't need to know which role they have.
  */
 export const Route = createFileRoute("/dashboard")({
+  ssr: false,
   beforeLoad: async () => {
     const { data: sess } = await supabase.auth.getSession();
     if (!sess.session) throw redirect({ to: "/login" });
